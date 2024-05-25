@@ -4,9 +4,9 @@
 
 <div align=center>
   
-![](https://img.shields.io/github/stars/seeingangelz/dotfiles?color=CF9FFF&logo=apachespark&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
-![](https://img.shields.io/github/last-commit/seeingangelz/dotfiles?&logo=github&style=for-the-badge&color=CF9FFF&logoColor=D9E0EE&labelColor=191c27)
-![](https://img.shields.io/github/repo-size/seeingangelz/dotfiles?color=CF9FFF&logo=hackthebox&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
+![](https://img.shields.io/github/stars/scarsandtears/dotfiles?color=CF9FFF&logo=apachespark&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
+![](https://img.shields.io/github/last-commit/scarsandtears/dotfiles?&logo=github&style=for-the-badge&color=CF9FFF&logoColor=D9E0EE&labelColor=191c27)
+![](https://img.shields.io/github/repo-size/scarsandtears/dotfiles?color=CF9FFF&logo=hackthebox&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
 
 </div>
 
@@ -63,7 +63,7 @@
 yay -S cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm checkupdates+aur xdotool xautolock betterlockscreen yad libnotify wal-telegram-git python-pywalfox xsettingsd themix-gui-git themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr clipmenu zsh cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot fzf git gnu-free-fonts go gd btop imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji numlockx obs-studio openssh perl pulseaudio pulsemixer udiskie python-pip python-pywal qalculate-gtk xdg-user-dirs qutebrowser ranger syncthing sxiv telegram-desktop tree ttf-jetbrains-mono-nerd ttf-font-awesome gpick ueberzugpp redshift p7zip unzip epub-thumbnailer-git python-pdftotext poppler vim webkit2gtk xclip yt-dlp zathura zathura-pdf-mupdf zip xorg-server xorg-xinit libx11 libxinerama libxft base base-devel
 ```
 ```sh
-git clone https://github.com/seeingangelz/dotfiles.git
+git clone https://github.com/scarsandtears/dotfiles.git
 ```
 
 > Create [symbolic links](https://www.freecodecamp.org/news/linux-ln-how-to-create-a-symbolic-link-in-linux-example-bash-command/) to the files/directories you need.
@@ -77,7 +77,7 @@ git clone https://github.com/seeingangelz/dotfiles.git
 > Install [curl](https://curl.se/)
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/seeingangelz/dotfiles/master/.github/dots_bootstrap.sh | bash -s && cd ~/Documents/dotfiles/ && ./install.sh
+curl -sSL https://raw.githubusercontent.com/scarsandtears/dotfiles/master/.github/dots_bootstrap.sh | bash -s && cd ~/Documents/dotfiles/ && ./install.sh
 ```
 
 </details>
@@ -362,7 +362,7 @@ curl -sSL https://raw.githubusercontent.com/seeingangelz/dotfiles/master/.github
       </a>
     </td>
     <td>
-      <a href="https://github.com/seeingangelz/dotfiles/blob/master/.config/suckless/st/patches/patch_column.diff">
+      <a href="https://github.com/scarsandtears/dotfiles/blob/master/.config/suckless/st/patches/patch_column.diff">
         <p title="Invisible content is kept instead of removed when shrinking the width of the st window."><kbd>patch_column</kbd></p>
       </a>
     </td>
