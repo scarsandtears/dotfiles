@@ -34,7 +34,7 @@ local function footer()
 	-- local fortune = handle:read("*a")
 	-- handle:close()
 	-- return fortune
-	return "github.com/seeingangelz"
+	return "github.com/scarsandtears"
 end
 
 dashboard.section.footer.val = footer()
