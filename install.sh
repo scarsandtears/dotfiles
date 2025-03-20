@@ -31,6 +31,15 @@ if ! command -v yay &> /dev/null; then
     cd -
 fi
 
+if grep -q "^ParallelDownloads" /etc/pacman.conf; then
+    sudo sed -i 's/^ParallelDownloads.*/ParallelDownloads = 10/' /etc/pacman.conf
+else
+    echo "ParallelDownloads = 10" | sudo tee -a /etc/pacman.conf > /dev/null
+fi
+
+sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//g' /etc/pacman.conf
+sudo pacman -Sy
+
 programs=(
     cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm checkupdates-with-aur
     xdotool xautolock betterlockscreen yad libnotify wal-telegram-git pywalfox xsettingsd themix-gui-git
