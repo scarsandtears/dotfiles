@@ -40,9 +40,6 @@ invertscroll &
 xinput set-prop 13 "libinput Natural Scrolling Enabled" 1 &
 xinput set-prop 18 "libinput Natural Scrolling Enabled" 1 &
 
-# Change resolution
-newres &
-
 # Check if sysresources and sysmodmap exist
 if [ -f $sysresources ]; then
   xrdb -merge $sysresources
@@ -61,3 +58,5 @@ fi
 # Execute wm
 exec dbus-launch --sh-syntax --exit-with-session dwm
 #exec dbus-launch --sh-syntax --exit-with-session awesome
+
+xrandr --output DP-1 --mode 1920x1080 --rate 144 --primary --output DP-2 --mode 1920x1080 --rate 144 --left-of DP-1
