@@ -35,6 +35,10 @@ alwayslock &
 # Check updates
 updnotify &
 
+# Inverter a rolagem do mouse
+xinput set-prop 13 "libinput Natural Scrolling Enabled" 1 &
+xinput set-prop 18 "libinput Natural Scrolling Enabled" 1 &
+
 # Change resolution
 newres &
 

@@ -39,7 +39,7 @@ programs=(
     fzf git gnu-free-fonts go gd btop imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
     numlockx obs-studio openssh perl pulseaudio pulsemixer udiskie python-pip python-pywal qalculate-gtk android-tools
     xdg-user-dirs qutebrowser ranger syncthing sxiv telegram-desktop tree ttf-jetbrains-mono-nerd ttf-font-awesome
-    gpick ueberzugpp redshift p7zip unzip epub-thumbnailer-git python-pdftotext poppler vim webkit2gtk xclip yt-dlp
+    gpick ueberzugpp redshift p7zip unzip epub-thumbnailer-git python-pdftotext poppler xorg-xinput vim webkit2gtk xclip yt-dlp
     zathura zathura-pdf-mupdf zip xorg-server xorg-xinit libx11 libxinerama libxft base base-devel
 )
 
