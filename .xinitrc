@@ -50,6 +50,9 @@ if [ -f "$userresources" ]; then
   xrdb -merge "$userresources"
 fi
 
+# Configure display settings with xrandr
+xrandr --output DP-1 --mode 1920x1080 --rate 144 --primary --output DP-2 --mode 1920x1080 --rate 144 --left-of DP-1
+
 # Run ssh-agent and dwm in an infinite loop
  while :; do
   ssh-agent dwm 
@@ -58,5 +61,3 @@ fi
 # Execute wm
 exec dbus-launch --sh-syntax --exit-with-session dwm
 #exec dbus-launch --sh-syntax --exit-with-session awesome
-
-xrandr --output DP-1 --mode 1920x1080 --rate 144 --primary --output DP-2 --mode 1920x1080 --rate 144 --left-of DP-1
