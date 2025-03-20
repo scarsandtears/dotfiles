@@ -5,8 +5,8 @@ adjust_scroll() {
     xinput set-prop $DEVICE_ID "libinput Natural Scrolling Enabled" 1
 }
 
-WIRELESS_ID="18"  # Ajuste para o ID do mouse wireless
-WIRED_ID="13"     # Ajuste para o ID do mouse com fio
+WIRELESS_ID="18"
+WIRED_ID="13"
 
 check_and_adjust() {
     if xinput list --id-only "$WIRELESS_ID" &>/dev/null; then
