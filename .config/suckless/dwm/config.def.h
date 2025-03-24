@@ -155,7 +155,7 @@ static const Layout layouts[] = {
 static char dmenumon[2]             =   "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]       =   { "dmenu_run", "-l", "15", NULL };
 static const char *termcmd[]        =   { "st", NULL };
-static const char *layoutmenu_cmd   =     "layoutmenu.sh";
+static const char *layoutmenu_cmd   =     "layoutmenu";
 static const char *browser[]        =   { "firefox", NULL };
 
 /* Xresources preferences to load at startup */
