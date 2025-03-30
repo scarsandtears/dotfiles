@@ -20,7 +20,7 @@ sensitivity = 50
 [input]
 
 method = pulse
-; source = auto
+source = auto
 
 ; method = alsa
 ; source = hw:Loopback,1
@@ -76,7 +76,6 @@ alacritty_sync = 1
 ; background = '#111111'
 ; foreground = '#33cccc'
 
-
 gradient = 1
 gradient_count = 6
 gradient_color_1 = "{color3}"
@@ -87,8 +86,6 @@ gradient_color_5 = "{color5}"
 gradient_color_6 = "{color4}"
 gradient_color_7 = "{color4}"
 gradient_color_8 = "{color3}"
-
-
 
 [smoothing]
 
