@@ -716,47 +716,47 @@ buttonpress(XEvent *e)
 		for (c = m->clients; c; c = c->next)
 			occ |= c->tags;
 
-    	x += TEXTW(buttonbar);
+		x += TEXTW(buttonbar);
 		if(ev->x < x) {
 			click = ClkButton;
 		} else {
-            unsigned int occ = 0;
-		for(c = m->clients; c; c=c->next)
-			occ |= c->tags;
-		do {
-			/* Do not reserve space for vacant tags */
-			if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
-				continue;
-        x += TEXTW(occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i]);
-            } while (ev->x >= x && ++i < LENGTH(tags));
+			unsigned int occ = 0;
+			for(c = m->clients; c; c=c->next)
+				occ |= c->tags;
+			do {
+				/* Do not reserve space for vacant tags */
+				if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+					continue;
+				x += TEXTW(occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i]);
+			} while (ev->x >= x && ++i < LENGTH(tags));
 			if (i < LENGTH(tags)) {
 				click = ClkTagBar;
 				arg.ui = 1 << i;
-                /* hide preview if we click the bar */
-                if (selmon->previewshow) {
-                    selmon->previewshow = 0;
-                    XUnmapWindow(dpy, selmon->tagwin);
-                }
+				/* hide preview if we click the bar */
+				if (selmon->previewshow) {
+					selmon->previewshow = 0;
+					XUnmapWindow(dpy, selmon->tagwin);
+				}
 			} else if (ev->x < x + TEXTW(selmon->ltsymbol))
 				click = ClkLtSymbol;
-        else if (ev->x > selmon->ww - statusw - 2 * sp) {
-          x = selmon->ww - statusw - 2 * sp;
+			else if (ev->x > selmon->ww - statusw - 2 * sp) {
+				x = selmon->ww - statusw - 2 * sp;
 				click = ClkStatusText;
-          statussig = 0;
-      for (text = s = stext; *s && x <= ev->x; s++) {
-        if ((unsigned char)(*s) < ' ') {
-          ch = *s;
-          *s = '\0';
-          x += TEXTW(text) - lrpad;
-          *s = ch;
-          text = s + 1;
-          if (x >= ev->x)
-            break;
-          statussig = ch;
-        }
-      }
-    } else
-		click = ClkWinTitle;
+				statussig = 0;
+				for (text = s = stext; *s && x <= ev->x; s++) {
+					if ((unsigned char)(*s) < ' ') {
+						ch = *s;
+						*s = '\0';
+						x += TEXTW(text) - lrpad;
+						*s = ch;
+						text = s + 1;
+						if (x >= ev->x)
+							break;
+						statussig = ch;
+					}
+				}
+			} else
+				click = ClkWinTitle;
 		}
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
@@ -766,14 +766,14 @@ buttonpress(XEvent *e)
 	}
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
-		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
+				&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
 			buttons[i].func((click == ClkTagBar || click == ClkWinTitle) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 
 void
 drawbar(Monitor *m)
 {
-    int x, w, tw = 0, stw = 0, n = 0, scm;
+	int x, w, tw = 0, stw = 0, n = 0, scm;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
@@ -783,14 +783,13 @@ drawbar(Monitor *m)
 	if (!m->showbar)
 		return;
 
+	/* Get systray width */
 	if (showsystray && m == systraytomon(m)) {
 		stw = getsystraywidth();
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_rect(drw, m->ww - stw, 0, stw, bh, 1, 1);
 	}
 
-	/* draw status first so it can be overdrawn by tags later */
-	if (m == selmon || 1) { /* status is only drawn on selected monitor */
+	/* Draw status first so it does not get overlapped */
+	if (m == selmon) { /* status is only drawn on the selected monitor */
 		char *text, *s, ch;
 		drw_setscheme(drw, scheme[SchemeSel]);
 
@@ -800,17 +799,24 @@ drawbar(Monitor *m)
 				ch = *s;
 				*s = '\0';
 				tw = TEXTW(text) - lrpad;
-                drw_text(drw, m->ww - statusw - 2 * sp + x, 0, tw, bh, 0, text, 0);
+				drw_text(drw, m->ww - statusw - stw - 2 * sp + x, 0, tw, bh, 0, text, 0);
 				x += tw;
 				*s = ch;
 				text = s + 1;
 			}
 		}
 		tw = TEXTW(text) - lrpad + 2;
-        drw_text(drw, m->ww - tw - 2 * sp, 0, tw, bh, 0, text, 0);
+		drw_text(drw, m->ww - tw - stw - 2 * sp, 0, tw, bh, 0, text, 0);
 		tw = statusw;
 	}
 
+	/* Draw systray */
+	if (showsystray && m == systraytomon(m)) {
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_rect(drw, m->ww - stw - 2 * sp, 0, stw, bh, 1, 1);
+	}
+
+	/* Draw tags and layout symbols */
 	for (c = m->clients; c; c = c->next) {
 		if (ISVISIBLE(c))
 			n++;
@@ -822,66 +828,52 @@ drawbar(Monitor *m)
 	w = TEXTW(buttonbar);
 	drw_setscheme(drw, scheme[SchemeSel]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
-    for (i = 0; i < LENGTH(tags); i++) {
-        /* Do not draw vacant tags */
-		if(!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
+	for (i = 0; i < LENGTH(tags); i++) {
+		/* Do not draw vacant tags */
+		if (!(occ & 1 << i || m->tagset[m->seltags] & 1 << i))
 			continue;
-        tagtext = occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i];
+		tagtext = occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i];
 		w = TEXTW(tagtext);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tagtext, urg & 1 << i);
-		if (ulineall || m->tagset[m->seltags] & 1 << i) /* if there are conflicts, just move these lines directly underneath both 'drw_setscheme' and 'drw_text' :) */
-		drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
-
-        /* Uncomment this if you want the little box over tags
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i); */
-				
+		if (ulineall || m->tagset[m->seltags] & 1 << i)
+			drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
 	drw_setscheme(drw, scheme[SchemeSel]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
+	/* Draw client titles */
 	if ((w = m->ww - tw - stw - x) > bh) {
-		    /* fix overflow when window name is bigger than window width */
-			int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
-			/* make sure name will not overlap on tags even when it is very long */
-			mid = mid >= lrpad / 2 ? mid : lrpad / 2;
+		int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
+		mid = mid >= lrpad / 2 ? mid : lrpad / 2;
 		if (n > 0) {
 			int remainder = w % n;
-            int tabw = (1.0 / (double)n) * w + 1 - 2 * sp;
+			int tabw = (1.0 / (double)n) * w + 1 - 2 * sp;
 			for (c = m->clients; c; c = c->next) {
 				if (!ISVISIBLE(c))
 					continue;
-				if (m->sel == c)
-					scm = SchemeSel;
-				else if (HIDDEN(c))
-					scm = SchemeHid;
-				else
-					scm = SchemeNorm;
+				scm = (m->sel == c) ? SchemeSel : (HIDDEN(c) ? SchemeHid : SchemeNorm);
 				drw_setscheme(drw, scheme[scm]);
 
 				if (remainder >= 0) {
-					if (remainder == 0) {
+					if (remainder == 0)
 						tabw--;
-					}
 					remainder--;
 				}
-					drw_text(drw, x, 0, tabw, bh, (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2) + (c->icon ? c->icw + ICONSPACING : 0), c->name, 0);
+				drw_text(drw, x, 0, tabw, bh, (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2) + (c->icon ? c->icw + ICONSPACING : 0), c->name, 0);
 				if (c->icon)
 					drw_pic(drw, x + (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2), (bh - c->ich) / 2, c->icw, c->ich, c->icon);
-                if (c->isfloating)
-                	drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
-                if (c->issticky)
-                    drw_polygon(drw, x + boxs, c->isfloating ? boxs * 2 + boxw : boxs, stickyiconbb.x, stickyiconbb.y, boxw, boxw * stickyiconbb.y / stickyiconbb.x, stickyicon, LENGTH(stickyicon), Nonconvex, c->tags & c->mon->tagset[c->mon->seltags]);
+				if (c->isfloating)
+					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
+				if (c->issticky)
+					drw_polygon(drw, x + boxs, c->isfloating ? boxs * 2 + boxw : boxs, stickyiconbb.x, stickyiconbb.y, boxw, boxw * stickyiconbb.y / stickyiconbb.x, stickyicon, LENGTH(stickyicon), Nonconvex, c->tags & c->mon->tagset[c->mon->seltags]);
 				x += tabw;
 			}
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
-            drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
+			drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
 		}
 	}
 	m->bt = n;
@@ -914,41 +906,41 @@ buttonpress(XEvent *e)
 		for (c = m->clients; c; c = c->next)
 			occ |= c->tags;
 
-    	x += TEXTW(buttonbar);
+		x += TEXTW(buttonbar);
 		if(ev->x < x) {
 			click = ClkButton;
 		} else {
 			do
-        x += TEXTW(occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i]);
+				x += TEXTW(occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i]);
 			while (ev->x >= x && ++i < LENGTH(tags));
 			if (i < LENGTH(tags)) {
 				click = ClkTagBar;
 				arg.ui = 1 << i;
-                /* hide preview if we click the bar */
-                if (selmon->previewshow) {
-                    selmon->previewshow = 0;
-                    XUnmapWindow(dpy, selmon->tagwin);
-                }
+				/* hide preview if we click the bar */
+				if (selmon->previewshow) {
+					selmon->previewshow = 0;
+					XUnmapWindow(dpy, selmon->tagwin);
+				}
 			} else if (ev->x < x + TEXTW(selmon->ltsymbol))
 				click = ClkLtSymbol;
-        else if (ev->x > selmon->ww - TEXTW(stext) - getsystraywidth() - 2 * sp) {
-          x = selmon->ww - statusw - 2 * sp;
+			else if (ev->x > selmon->ww - TEXTW(stext) - getsystraywidth() - 2 * sp) {
+				x = selmon->ww - statusw - 2 * sp;
 				click = ClkStatusText;
-          statussig = 0;
-      for (text = s = stext; *s && x <= ev->x; s++) {
-        if ((unsigned char)(*s) < ' ') {
-          ch = *s;
-          *s = '\0';
-          x += TEXTW(text) - lrpad;
-          *s = ch;
-          text = s + 1;
-          if (x >= ev->x)
-            break;
-          statussig = ch;
-        }
-      }
-    } else
-		click = ClkWinTitle;
+				statussig = 0;
+				for (text = s = stext; *s && x <= ev->x; s++) {
+					if ((unsigned char)(*s) < ' ') {
+						ch = *s;
+						*s = '\0';
+						x += TEXTW(text) - lrpad;
+						*s = ch;
+						text = s + 1;
+						if (x >= ev->x)
+							break;
+						statussig = ch;
+					}
+				}
+			} else
+				click = ClkWinTitle;
 		}
 	} else if ((c = wintoclient(ev->window))) {
 		focus(c);
@@ -958,14 +950,14 @@ buttonpress(XEvent *e)
 	}
 	for (i = 0; i < LENGTH(buttons); i++)
 		if (click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
-		&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
+				&& CLEANMASK(buttons[i].mask) == CLEANMASK(ev->state))
 			buttons[i].func((click == ClkTagBar || click == ClkWinTitle) && buttons[i].arg.i == 0 ? &arg : &buttons[i].arg);
 }
 
 void
 drawbar(Monitor *m)
 {
-	int x, w, tw = 0, n = 0, scm;
+	int x, w, tw = 0, stw = 0, n = 0, scm;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
@@ -974,6 +966,11 @@ drawbar(Monitor *m)
 
 	if (!m->showbar)
 		return;
+
+	/* Get systray width */
+	if (showsystray && m == systraytomon(m)) {
+		stw = getsystraywidth();
+	}
 
 	/* draw status first so it can be overdrawn by tags later */
 	if (m == selmon || 1) { /* status is only drawn on selected monitor */
@@ -986,15 +983,21 @@ drawbar(Monitor *m)
 				ch = *s;
 				*s = '\0';
 				tw = TEXTW(text) - lrpad;
-                drw_text(drw, m->ww - statusw - 2 * sp + x, 0, tw, bh, 0, text, 0);
+				drw_text(drw, m->ww - statusw - stw - 2 * sp + x, 0, tw, bh, 0, text, 0);
 				x += tw;
 				*s = ch;
 				text = s + 1;
 			}
 		}
-		tw = TEXTW(text) - lrpad + 2;
-        drw_text(drw, m->ww - tw - 2 * sp, 0, tw, bh, 0, text, 0);
+		tw = TEXTW(text) - lrpad + 12;
+		drw_text(drw, m->ww - tw - stw - 2 * sp, 0, tw, bh, 0, text, 0);
 		tw = statusw;
+	}
+
+	/* Draw systray */
+	if (showsystray && m == systraytomon(m)) {
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_rect(drw, m->ww - stw - 2 * sp, 0, stw, bh, 1, 1);
 	}
 
 	for (c = m->clients; c; c = c->next) {
@@ -1008,20 +1011,20 @@ drawbar(Monitor *m)
 	w = TEXTW(buttonbar);
 	drw_setscheme(drw, scheme[SchemeSel]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, buttonbar, 0);
-    for (i = 0; i < LENGTH(tags); i++) {
-        tagtext = occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i];
+	for (i = 0; i < LENGTH(tags); i++) {
+		tagtext = occ & 1 << i ? (m->tagset[m->seltags] & 1 << i ? selectedtags[i] : alttags[i]) : tags[i];
 		w = TEXTW(tagtext);
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tagtext, urg & 1 << i);
 		if (ulineall || m->tagset[m->seltags] & 1 << i) /* if there are conflicts, just move these lines directly underneath both 'drw_setscheme' and 'drw_text' :) */
-		drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
+			drw_rect(drw, x + ulinepad, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
 
-        /* Uncomment this if you want the little box over tags
-		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i); */
-				
+		/* Uncomment this if you want the little box over tags
+		   if (occ & 1 << i)
+		   drw_rect(drw, x + boxs, boxs, boxw, boxw,
+		   m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+		   urg & 1 << i); */
+
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
@@ -1029,13 +1032,13 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - x) > bh) {
-		    /* fix overflow when window name is bigger than window width */
-			int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
-			/* make sure name will not overlap on tags even when it is very long */
-			mid = mid >= lrpad / 2 ? mid : lrpad / 2;
+		/* fix overflow when window name is bigger than window width */
+		int mid = (m->ww - (int)TEXTW(m->sel->name)) / 2 - x;
+		/* make sure name will not overlap on tags even when it is very long */
+		mid = mid >= lrpad / 2 ? mid : lrpad / 2;
 		if (n > 0) {
 			int remainder = w % n;
-            int tabw = (1.0 / (double)n) * w + 1 - 2 * sp;
+			int tabw = (1.0 / (double)n) * w + 1 - 2 * sp;
 			for (c = m->clients; c; c = c->next) {
 				if (!ISVISIBLE(c))
 					continue;
@@ -1053,18 +1056,18 @@ drawbar(Monitor *m)
 					}
 					remainder--;
 				}
-					drw_text(drw, x, 0, tabw, bh, (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2) + (c->icon ? c->icw + ICONSPACING : 0), c->name, 0);
+				drw_text(drw, x, 0, tabw, bh, (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2) + (c->icon ? c->icw + ICONSPACING : 0), c->name, 0);
 				if (c->icon)
 					drw_pic(drw, x + (TEXTW(c->name) < tabw ? (tabw - c->icw - TEXTW(c->name) + lrpad) / 2 : lrpad / 2), (bh - c->ich) / 2, c->icw, c->ich, c->icon);
-                if (c->isfloating)
-                	drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
-                if (c->issticky)
-                    drw_polygon(drw, x + boxs, c->isfloating ? boxs * 2 + boxw : boxs, stickyiconbb.x, stickyiconbb.y, boxw, boxw * stickyiconbb.y / stickyiconbb.x, stickyicon, LENGTH(stickyicon), Nonconvex, c->tags & c->mon->tagset[c->mon->seltags]);
+				if (c->isfloating)
+					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
+				if (c->issticky)
+					drw_polygon(drw, x + boxs, c->isfloating ? boxs * 2 + boxw : boxs, stickyiconbb.x, stickyiconbb.y, boxw, boxw * stickyiconbb.y / stickyiconbb.x, stickyicon, LENGTH(stickyicon), Nonconvex, c->tags & c->mon->tagset[c->mon->seltags]);
 				x += tabw;
 			}
 		} else {
 			drw_setscheme(drw, scheme[SchemeNorm]);
-            drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
+			drw_rect(drw, x, 0, w - 2 * sp, bh, 1, 1);
 		}
 	}
 	m->bt = n;
@@ -1252,7 +1255,7 @@ configurenotify(XEvent *e)
 				for (c = m->clients; c; c = c->next)
 					if (c->isfullscreen)
 						resizeclient(c, m->mx, m->my, m->mw, m->mh);
-				XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp, m->ww -  2 * sp, bh);
+				XMoveResizeWindow(dpy, m->barwin, m->wx + sp, m->by + vp, m->ww - 2 * sp, bh);
 			}
 			focus(NULL);
 			arrange(NULL);
@@ -2496,30 +2499,29 @@ pop(Client *c)
 }
 
 void
-updatestatus(void)
-{
-	Monitor* m;
+updatestatus(void) {
+	Monitor *m;
+	char *text, *s, ch;
+
 	if (!gettextprop(root, XA_WM_NAME, stext, sizeof(stext))) {
-		strcpy(stext, "dwm-"VERSION);
-		statusw = TEXTW(stext) - lrpad + 2;
-	} else {
-		char *text, *s, ch;
-
-		statusw  = 0;
-		for (text = s = stext; *s; s++) {
-			if ((unsigned char)(*s) < ' ') {
-				ch = *s;
-				*s = '\0';
-				statusw += TEXTW(text) - lrpad;
-				*s = ch;
-				text = s + 1;
-			}
-		}
-		statusw += TEXTW(text) - lrpad + 2;
-
+		strcpy(stext, "dwm-" VERSION);
 	}
-	for(m = mons; m; m = m->next)
-	drawbar(m);
+
+	statusw = 0;
+	for (text = s = stext; *s; s++) {
+		if ((unsigned char)(*s) < ' ') {  // Detect control characters
+			ch = *s;
+			*s = '\0';
+			statusw += TEXTW(text) - lrpad; // Calculate width of valid text
+			*s = ch;
+			text = s + 1;  // Move to next part
+		}
+	}
+	statusw += TEXTW(text) - lrpad + 2;
+
+	for (m = mons; m; m = m->next) {
+		drawbar(m);
+	}
 }
 
 void
@@ -3958,6 +3960,7 @@ updatesystray(int updatebar)
 	Monitor *m = systraytomon(NULL);
 	unsigned int x = m->mx + m->mw;
 	unsigned int w = 1, xpad = 0, ypad = 0;
+    unsigned int y = ((bh - 12) / 2);
 	#if BARPADDING_PATCH
 	xpad = sp;
 	ypad = vp;
@@ -4005,16 +4008,17 @@ updatesystray(int updatebar)
 		XMapRaised(dpy, i->win);
 		w += systrayspacing;
 		i->x = w;
-		XMoveResizeWindow(dpy, i->win, i->x, 0, i->w, i->h);
+        i->y = y;
+        XMoveResizeWindow(dpy, i->win, i->x, i->y, i->w, i->h);
 		w += i->w;
 		if (i->mon != m)
 			i->mon = m;
 	}
 	w = w ? w + systrayspacing : 1;
 	x -= w;
-	XMoveResizeWindow(dpy, systray->win, x - xpad, m->by + ypad, w, bh);
-	wc.x = x - xpad;
-	wc.y = m->by + ypad;
+	XMoveResizeWindow(dpy, systray->win, x - xpad - sp, m->by + ypad + vp, w, bh);
+	wc.x = x - xpad - sp;
+	wc.y = m->by + ypad + vp;
 	wc.width = w;
 	wc.height = bh;
 	wc.stack_mode = Above; wc.sibling = m->barwin;
@@ -4031,25 +4035,11 @@ void
 updatesystrayicongeom(Client *i, int w, int h)
 {
 	if (i) {
-		i->h = bh;
-		if (w == h)
-			i->w = bh;
-		else if (h == bh)
-			i->w = w;
-		else
-			i->w = (int) ((float)bh * ((float)w / (float)h));
-		applysizehints(i, &(i->x), &(i->y), &(i->w), &(i->h), False);
-		/* force icons into the systray dimensions if they don't want to */
-		if (i->h > bh) {
-			if (i->w == i->h)
-				i->w = bh;
-			else
-				i->w = (int) ((float)bh * ((float)i->w / (float)i->h));
-			i->h = bh;
-		}
-		if (i->w > 2*bh)
-			i->w = bh;
-	}
+        i->w = w = 15; // Set icon width to 16
+        i->h = h = 15; // Set icon height
+        i->y = ((bh - h) / 2); // Calculate y to center icon vertically
+        XMoveResizeWindow(dpy, i->win, i->x, i->y, i->w, i->h);
+    }
 }
 
 void
