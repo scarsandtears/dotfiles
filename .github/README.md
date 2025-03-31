@@ -1,12 +1,16 @@
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/123886904/275592645-3ca03a4b-d6f5-46d6-a329-83cb1f862c08.gif" width="300">
+    <img src="https://github.com/user-attachments/assets/45b979eb-9fa6-49be-93a4-b7b90b2dceba" width="300">
+</div><br>
+
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/88f292c5-1c6c-483c-a66a-19fc9d6fd365" width="300">
 </div><br>
 
 <div align=center>
   
-![](https://img.shields.io/github/stars/scarsandtears/dotfiles?color=CF9FFF&logo=apachespark&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
-![](https://img.shields.io/github/last-commit/scarsandtears/dotfiles?&logo=github&style=for-the-badge&color=CF9FFF&logoColor=D9E0EE&labelColor=191c27)
-![](https://img.shields.io/github/repo-size/scarsandtears/dotfiles?color=CF9FFF&logo=hackthebox&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
+![](https://img.shields.io/github/stars/scarsandtears/dotfiles?color=FFFFFF&logo=apachespark&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
+![](https://img.shields.io/github/last-commit/scarsandtears/dotfiles?&logo=github&style=for-the-badge&color=FFFFFF&logoColor=D9E0EE&labelColor=191c27)
+![](https://img.shields.io/github/repo-size/scarsandtears/dotfiles?color=FFFFFF&logo=hackthebox&logoColor=D9E0EE&style=for-the-badge&labelColor=191c27)
 
 </div>
 
