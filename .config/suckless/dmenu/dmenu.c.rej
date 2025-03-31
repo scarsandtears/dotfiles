@@ -1,0 +1,20 @@
+--- dmenu.c
++++ dmenu.c
+@@ -84,7 +84,7 @@ calcoffsets(void)
+ 	int i, n;
+ 
+ 	if (lines > 0)
+-		n = lines * bh;
++		n = (lines * bh) - 1;
+ 	else
+ 		n = mw - (promptw + inputw + TEXTW("<") + TEXTW(">"));
+ 	/* calculate which items will begin the next page and previous page */
+@@ -188,6 +204,8 @@ drawmenu(void)
+ 		/* draw vertical list */
+ 		for (item = curr; item != next; item = item->right)
+ 			drawitem(item, x, y += bh, mw - x);
++
++        drawdate(x, lines * bh, w);
+ 	} else if (matches) {
+ 		/* draw horizontal list */
+ 		x += inputw;
