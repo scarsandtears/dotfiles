@@ -57,6 +57,7 @@ return packer.startup(function(use)
   use "windwp/nvim-autopairs"
   use "akinsho/bufferline.nvim"
   use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons',},}
+  use { 'vyfor/cord.nvim', run = ':Cord update', }
   use "akinsho/toggleterm.nvim"
   use "goolord/alpha-nvim"
   use "lewis6991/gitsigns.nvim"
