@@ -1,0 +1,24 @@
+#!/bin/bash
+
+adjust_scroll() {
+    DEVICE_ID=$1
+    xinput set-prop $DEVICE_ID "libinput Natural Scrolling Enabled" 1
+}
+
+WIRELESS_ID="18"
+WIRED_ID="13"
+
+check_and_adjust() {
+    if xinput list --id-only "$WIRELESS_ID" &>/dev/null; then
+        adjust_scroll $WIRELESS_ID
+    elif xinput list --id-only "$WIRED_ID" &>/dev/null; then
+        adjust_scroll $WIRED_ID
+    fi
+}
+
+check_and_adjust
+
+while true; do
+    sleep 2
+    check_and_adjust
+done
