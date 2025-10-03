@@ -41,8 +41,8 @@ sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//g'
 sudo pacman -Sy &> /dev/null
 
 programs=(
-    cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm checkupdates-with-aur
-    xdotool xautolock betterlockscreen yad libnotify wal-telegram-git pywalfox xsettingsd themix-gui-git
+    cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm xdotool xautolock betterlockscreen 
+    yad libnotify wal-telegram-git pywalfox xsettingsd themix-gui-git
     themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh
     cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot pcmanfm gvfs
     fzf git gnu-free-fonts go gd btop mullvad-vpn-bin imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
