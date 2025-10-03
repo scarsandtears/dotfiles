@@ -1,11 +1,48 @@
+OFFSET_FILE="/tmp/cmus_scroll_offset"
+MAX_LEN=30
+
+ICON=""
+
 if pgrep -x "cmus" > /dev/null; then
     output=$(cmus-remote -Q)
-    artist=$(echo "$output" | awk '/artist/ { if (found != 1) { found=1; for (i=3; i<=NF; i++) { printf "%s ", $i } } }')
-    title=$(echo "$output" | awk '/title/ { for (i=3; i<=NF; i++) { printf "%s ", $i } }')
+    artist=$(echo "$output" | awk '/^tag artist/ { $1=$2=""; print substr($0,3) }')
+    title=$(echo "$output" | awk '/^tag title/ { $1=$2=""; print substr($0,3) }')
+
     if [ -z "$artist" ] && [ -z "$title" ]; then
         echo ""
     else
-        echo -e " $artist- $title" | sed 's/.$//'
+        music_text="${artist}- ${title}"
+        music_text=$(echo "$music_text" | sed 's/ *$//')
+        len=$(echo -n "$music_text" | wc -m)
+
+        if [ "$len" -le "$MAX_LEN" ]; then
+            echo "$ICON $music_text"
+            echo 0 > "$OFFSET_FILE"
+        else
+            if [ -f "$OFFSET_FILE" ]; then
+                offset=$(cat "$OFFSET_FILE")
+            else
+                offset=0
+            fi
+
+            scroll_text="${music_text}   ${music_text}"
+
+            display=$(echo -n "$scroll_text" | cut -c $((offset + 1))-$((offset + MAX_LEN)))
+
+            display_len=$(echo -n "$display" | wc -m)
+            if [ "$display_len" -lt "$MAX_LEN" ]; then
+                spaces=$(printf '%*s' $((MAX_LEN - display_len)))
+                display="${display}${spaces}"
+            fi
+
+            echo "$ICON $display"
+
+            offset=$((offset + 1))
+            if [ "$offset" -ge "$len" ]; then
+                offset=0
+            fi
+            echo "$offset" > "$OFFSET_FILE"
+        fi
     fi
 fi
 

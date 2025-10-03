@@ -38,11 +38,6 @@ updnotify &
 # Enable polkit
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-# Invert scroll
-invertscroll &
-xinput set-prop 13 "libinput Natural Scrolling Enabled" 1 &
-xinput set-prop 18 "libinput Natural Scrolling Enabled" 1 &
-
 # Check if sysresources and sysmodmap exist
 if [ -f $sysresources ]; then
   xrdb -merge $sysresources
@@ -63,4 +58,3 @@ xrandr --output DP-0 --mode 1920x1080 --rate 144 --primary --output DP-2 --mode 
 
 # Execute wm
 exec dbus-launch --sh-syntax --exit-with-session dwm
-#exec dbus-launch --sh-syntax --exit-with-session awesome
