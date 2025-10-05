@@ -42,12 +42,12 @@
 </p>
 <br>
 
-> **Warning**
->
-> This is my private Arch Linux configuration. It is recommended to use it only for inspiration, as there is no guarantee that it will work for you.
-> 
-> I am no Arch expert. I'm just a Arch user.
->
+  **Warning**
+ 
+  This is my private Arch Linux configuration. It is recommended to use it only for inspiration, as there is no guarantee that it will work for you.
+  
+  I am no Arch expert. I'm just a Arch user.
+ 
 <br>
 
 <div align=center>
@@ -61,7 +61,7 @@
 <summary><b>Manual</b></summary>
 <br>
 
-> Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay).
+  Assuming your **AUR Helper** is [yay](https://github.com/Jguer/yay).
 
 ```sh
 yay -S cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm checkupdates-with-aur xdotool xautolock betterlockscreen yad libnotify wal-telegram-git pywalfox xsettingsd themix-gui-git themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot pcmanfm fzf git gnu-free-fonts go gd btop imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji numlockx obs-studio openssh perl pulseaudio pulsemixer udiskie python-pip python-pywal qalculate-gtk android-tools xdg-user-dirs qutebrowser ranger syncthing sxiv telegram-desktop tree ttf-jetbrains-mono-nerd ttf-font-awesome gpick ueberzugpp redshift p7zip unzip epub-thumbnailer-git python-pdftotext poppler xorg-xinput vim webkit2gtk xclip yt-dlp zathura zathura-pdf-mupdf zip xorg-server xorg-xinit libx11 libxinerama libxft base base-devel
@@ -70,7 +70,7 @@ yay -S cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipe
 git clone https://github.com/scarsandtears/dotfiles.git
 ```
 
-> Create [symbolic links](https://www.freecodecamp.org/news/linux-ln-how-to-create-a-symbolic-link-in-linux-example-bash-command/) to the files/directories you need.
+  Create [symbolic links](https://www.freecodecamp.org/news/linux-ln-how-to-create-a-symbolic-link-in-linux-example-bash-command/) to the files/directories you need.
 
 </details>
 
@@ -78,7 +78,7 @@ git clone https://github.com/scarsandtears/dotfiles.git
 <summary><b>Automatic</b></summary>
 <br>
 
-> Install [curl](https://curl.se/)
+  Install [curl](https://curl.se/)
 
 ```sh
 bash <(curl -sSL https://kutt.it/hntdots)
@@ -108,10 +108,10 @@ bash <(curl -sSL https://kutt.it/hntdots)
     <td>
       <a href="https://dwm.suckless.org/patches/vanitygaps/">
         <p title="Adds gaps between client windows.
-		Add cfacts patch.
-		Adds layouts: spiral, dwindle, bstack, bstackhoriz
-		nrowgrid, horizgrid, gaplessgrid, centeredmaster
-      		centeredfloatingmaster, grid, deck"><kbd>vanitygapscombo</kbd></p>
+        Add cfacts patch.
+        Adds layouts: spiral, dwindle, bstack, bstackhoriz
+        nrowgrid, horizgrid, gaplessgrid, centeredmaster
+            centeredfloatingmaster, grid, deck"><kbd>vanitygapscombo</kbd></p>
       </a>
     </td>
     <td>
@@ -186,7 +186,7 @@ bash <(curl -sSL https://kutt.it/hntdots)
     <td>
       <a href="https://dwm.suckless.org/patches/awesomebar/">
         <p title="This patch changes the taskbar to be more like awesome."><kbd>awesomebar
-	</kbd></p>
+    </kbd></p>
       </a>
     </td>
     <td>
@@ -234,11 +234,11 @@ bash <(curl -sSL https://kutt.it/hntdots)
     <td>
       <a href="https://dwm.suckless.org/patches/attachdirection/">
         <p title="Attachdirection is a merge of:
-		attachabove
-		attachaside
-		attachbelow
-		attachbottom
-		attachtop."><kbd>attachdirection</kbd></p>
+        attachabove
+        attachaside
+        attachbelow
+        attachbottom
+        attachtop."><kbd>attachdirection</kbd></p>
       </a>
     </td>
         <td>
@@ -313,9 +313,9 @@ bash <(curl -sSL https://kutt.it/hntdots)
   </tr>
 </table>
   
-> **Note**
->
-> Hover over the patch to receive information about it.
+  **Note**
+ 
+  Hover over the patch to receive information about it.
   
 </details>
 <details>
@@ -382,9 +382,9 @@ bash <(curl -sSL https://kutt.it/hntdots)
   </tr>
 </table>
 
-> **Note**
->
-> Hover over the patch to receive information about it.
+  **Note**
+ 
+  Hover over the patch to receive information about it.
 </details>
 
 <details>
@@ -447,9 +447,9 @@ bash <(curl -sSL https://kutt.it/hntdots)
 </tr>
 </table>
 
-> **Note**
->
-> Hover over the patch to receive information about it.
+  **Note**
+ 
+  Hover over the patch to receive information about it.
 </details>
 
 <details>
@@ -464,9 +464,9 @@ bash <(curl -sSL https://kutt.it/hntdots)
 | `Super` + `←` `→`                  | Move to another window.                        |
 | `Super` + `Shift` + `←` `→`        | Move master window.                            |
 | `Super` + `Shift` + `Space`        | Toggle floating window.                        |
-| `Super` + `,`            	     | Show/Add to scratchpad.                        |
+| `Super` + `,`                      | Show/Add to scratchpad.                        |
 | `Super` + `Shift` + `,`            | Hide scratchpad.                               |
-| `Super` + `.`            	     | Remove scratchpad.                             |
+| `Super` + `.`                      | Remove scratchpad.                             |
 | `Super` + `M`                      | Monocle layout.                                |
 | `Super` + `T`                      | Tiled layout.                                  |
 | `Super` + `F`                      | Spiral layout.                                 |
@@ -502,17 +502,19 @@ bash <(curl -sSL https://kutt.it/hntdots)
 | `Super` + `F6`                     | Open audio manager.                            |
 | `Super` + `F7`                     | Open screen recorder.                          |
 | `Super` + `F11`                    | Lockscreen.                                    |
-| `Calculator`               	     | Open calculator.                               |
+| `Calculator`                       | Open calculator.                               |
 | `Super` + `Shift` + `N`            | Toggle nightmode.                              |
 | `Super` + `Shift` + `E`            | Theme selector.                                |
 | `Super` + `Control` + `E`          | Emoji selector.                                |
 | `Super` + `Shift` + `S`            | Manage dotfiles.                               |
 | `Super` + `Shift` + `Y`            | Manage clipboard.                              |
+| `Super` + `Shift` + `V`            | Select VPN location.                           |
+| `Super` + `Shift` + `K`            | Choose audio output.                           |
 | `Super` + `PrtSc`                  | Fullscreen screenshot.                         |
 | `PrtSc`                            | Screenshot of the selected area.               |
-| `AudioPlay`                 	     | Toggle Play/Pause media.                       |
-| `AudioNext`                 	     | Next track.                                    |
-| `AudioPrev`                 	     | Previous track.                       	      |
+| `AudioPlay`                        | Toggle Play/Pause media.                       |
+| `AudioNext`                        | Next track.                                    |
+| `AudioPrev`                        | Previous track.                                |
 | `AudioLowerVolume`                 | Decrease volume.                               |
 | `AudioRaiseVolume`                 | Increase volume.                               |
 | `AudioMute`                        | Toggle mute volume.                            |
