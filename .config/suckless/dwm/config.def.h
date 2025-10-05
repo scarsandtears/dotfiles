@@ -96,10 +96,13 @@ static const Rule rules[] = {
   /* class                instance           title        tags mask   iscentered  isfloating  isterminal  noswallow  monitor  float x,y,w,h  floatborderpx*/
   { "Emacs",                NULL,             NULL,          1<<0,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "firefox",              NULL,             NULL,          1<<1,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
+  { "firefox",              NULL,        "Library",             0,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "qutebrowser",          NULL,             NULL,          1<<1,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "steam",                NULL,             NULL,          1<<2,        0,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "steam",                NULL,          "Steam",          1<<2,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "TelegramDesktop",      NULL,             NULL,          1<<3,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
+  { "qBittorrent",          NULL,    "qBittorrent",          1<<4,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
+  { "qBittorrent",          NULL,             NULL,          1<<4,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "St",                   NULL,             NULL,             0,        1,          0,          1,          0,       -1,     -1,-1,-1,-1,        -1      },
   { "Pcmanfm",              NULL,             NULL,             0,        0,          0,          1,          0,       -1,     -1,-1,-1,-1,        -1      },
   { "Qalculate-gtk",        NULL,             NULL,             0,        0,          1,          0,          1,       -1,     -1,-1,-1,-1,        -1      },
