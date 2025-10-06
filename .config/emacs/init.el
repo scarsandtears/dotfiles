@@ -28,7 +28,6 @@
       nil 'alpha
       (if (eql (cond ((numberp alpha) alpha)
                      ((numberp (cdr alpha)) (cdr alpha))
-                     ;; Also handle undocumented (<active> <inactive>) form.
                      ((numberp (cadr alpha)) (cadr alpha)))
                100)
           '(85 . 50) '(100 . 100)))))
@@ -37,7 +36,7 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-         ("org"   . "https://orgmode.org/elpa/")
+         ("org" . "https://orgmode.org/elpa/")
          ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
@@ -92,25 +91,50 @@
   :init (setq ewal-use-built-in-always-p nil
               ewal-use-built-in-on-failure-p t
               ewal-built-in-palette "sexy-material"))
+
 (use-package ewal-spacemacs-themes
-  :init (progn
-          (setq spacemacs-theme-underline-parens t
-                my:rice:font (font-spec
-                              :family "Source Code Pro"
-                              :weight 'semi-bold
-                              :size 11.0))
-          (show-paren-mode +1)
-          (global-hl-line-mode)
-          (set-frame-font my:rice:font nil t)
-          (add-to-list  'default-frame-alist
-                        `(font . ,(font-xlfd-name my:rice:font))))
-  :config (progn
-            (load-theme 'ewal-spacemacs-modern t)
-           (enable-theme 'ewal-spacemacs-modern)))
+  :init
+  (progn
+    (setq spacemacs-theme-underline-parens t)
+    (let ((font-name "JetBrainsMonoNL Nerd Font Propo"))
+      (when (member font-name (font-family-list))
+        (setq my:rice:font (font-spec
+                            :family font-name
+                            :weight 'semi-bold
+                            :size 11.0))
+        (set-frame-font my:rice:font nil t)
+        (add-to-list 'default-frame-alist
+                     `(font . ,(font-xlfd-name my:rice:font))))))
+  :config
+  (progn
+    (load-theme 'ewal-spacemacs-modern t)
+    (enable-theme 'ewal-spacemacs-modern)))
+
 (use-package ewal-evil-cursors
   :after (ewal-spacemacs-themes)
   :config (ewal-evil-cursors-get-colors
            :apply t :spaceline t))
+
+(when (and (display-graphic-p)
+           (string= (face-attribute 'default :family) "JetBrainsMonoNL Nerd Font Propo"))
+  (set-fontset-font t 'symbol
+                    (font-spec :family "JetBrainsMonoNL Nerd Font Propo") nil 'prepend)
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  (global-prettify-symbols-mode +1))
+
+(use-package treesit-auto
+  :config
+  (global-treesit-auto-mode)
+  (setq treesit-auto-install 'prompt))
+
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
+(use-package highlight-indent-guides
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :init
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-auto-enabled t
+        highlight-indent-guides-responsive 'top))
 
 (use-package auto-complete
   :init
