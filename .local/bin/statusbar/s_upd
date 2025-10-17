@@ -1,3 +1,12 @@
+#!/bin/bash
+
+SYNC_FILE="/var/lib/pacman/sync/core.db"
+SYNC_INTERVAL=$((6 * 3600)) # 6 horas em segundos
+
+if [ ! -f "$SYNC_FILE" ] || [ $(($(date +%s) - $(stat -c %Y "$SYNC_FILE"))) -gt $SYNC_INTERVAL ]; then
+    yay -Sy --quiet --noconfirm > /dev/null 2>&1
+fi
+
 NUM_UPDATES=$( (yay -Qu --repo; yay -Qua) 2>/dev/null | awk '/->/' | wc -l )
 
 if [ "$NUM_UPDATES" -gt 0 ]; then
@@ -7,6 +16,6 @@ fi
 case $BLOCK_BUTTON in
     1) setsid -f st -n spterm -g 90x20 -e bash -c "yay -Syu && kill -42 $(pidof dwmblocks) > /dev/null 2>&1 && setxkbmap br; exec zsh" ;;
     2) xdotool key --clearmodifiers "Super_L+Shift+Return" ;;
-    3) notify-send "UPDATES AVAILABLE:" "$((yay -Qu --repo; yay -Qua) 2>/dev/null | awk '/->/ {print $1}')";;
+    3) notify-send "AVAILABLE UPDATES:" "$((yay -Qu --repo; yay -Qua) 2>/dev/null | awk '/->/ {print $1}')" ;;
     6) st -e nvim "$0" ;;
 esac
