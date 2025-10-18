@@ -57,6 +57,7 @@ return packer.startup(function(use)
   use "windwp/nvim-autopairs"
   use "akinsho/bufferline.nvim"
   use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons',},}
+  use ({ "brianhuster/live-preview.nvim", config = function() require("livepreview.config").set({ browser = "firefox", port = 8080, mappings = { open = "<leader>lp", close = "<leader>lq" } }) end })
   use { 'vyfor/cord.nvim', run = ':Cord update', }
   use "akinsho/toggleterm.nvim"
   use "goolord/alpha-nvim"
