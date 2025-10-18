@@ -1,21 +1,35 @@
 #!/bin/bash
 
-SYNC_FILE="/var/lib/pacman/sync/core.db"
-SYNC_INTERVAL=$((6 * 3600)) # 6 horas em segundos
+CACHE_DIR="/tmp/dwmblocks_updates"
+PACMAN_CACHE="$CACHE_DIR/pacman"
+AUR_CACHE="$CACHE_DIR/aur"
+CACHE_TTL=$((5 * 60)) # 5 minutos
 
-if [ ! -f "$SYNC_FILE" ] || [ $(($(date +%s) - $(stat -c %Y "$SYNC_FILE"))) -gt $SYNC_INTERVAL ]; then
-    yay -Sy --quiet --noconfirm > /dev/null 2>&1
+mkdir -p "$CACHE_DIR"
+
+if [ ! -f "$PACMAN_CACHE" ] || [ $(( $(date +%s) - $(stat -c %Y "$PACMAN_CACHE") )) -gt $CACHE_TTL ]; then
+    if command -v checkupdates &>/dev/null; then
+        checkupdates > "$PACMAN_CACHE" 2>/dev/null
+    else
+        echo " ERR" && exit 1
+    fi
 fi
 
-NUM_UPDATES=$( (yay -Qu --repo; yay -Qua) 2>/dev/null | awk '/->/' | wc -l )
+if [ ! -f "$AUR_CACHE" ] || [ $(( $(date +%s) - $(stat -c %Y "$AUR_CACHE") )) -gt $CACHE_TTL ]; then
+    yay -Qua > "$AUR_CACHE" 2>/dev/null
+fi
 
-if [ "$NUM_UPDATES" -gt 0 ]; then
-    echo " $NUM_UPDATES"
+PACMAN_UPDATES=$(wc -l < "$PACMAN_CACHE")
+AUR_UPDATES=$(wc -l < "$AUR_CACHE")
+TOTAL=$((PACMAN_UPDATES + AUR_UPDATES))
+
+if [ "$TOTAL" -gt 0 ]; then
+    echo " $TOTAL"
 fi
 
 case $BLOCK_BUTTON in
-    1) setsid -f st -n spterm -g 90x20 -e bash -c "yay -Syu && kill -42 $(pidof dwmblocks) > /dev/null 2>&1 && setxkbmap br; exec zsh" ;;
-    2) xdotool key --clearmodifiers "Super_L+Shift+Return" ;;
-    3) notify-send "AVAILABLE UPDATES:" "$((yay -Qu --repo; yay -Qua) 2>/dev/null | awk '/->/ {print $1}')" ;;
-    6) st -e nvim "$0" ;;
+    1) setsid -f st -n spterm -g 90x20 -e bash -c "yay -Syu && rm -f '$PACMAN_CACHE' '$AUR_CACHE' && kill -42 \$(pidof dwmblocks) >/dev/null 2>&1 && setxkbmap br; exec zsh";;
+    2) xdotool key --clearmodifiers "Super_L+Shift+Return";;
+    3) notify-send "AVAILABLE UPDATES:" "\$( (cat \"$PACMAN_CACHE\" \"$AUR_CACHE\") | awk '{print \$1}' )";;
+    6) st -e nvim "\$0";;
 esac
