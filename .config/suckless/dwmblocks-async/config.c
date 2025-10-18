@@ -4,10 +4,10 @@
 #include "util.h"
 
 Block blocks[] = {
-	{"s_cmus",             1,       11},
-	//{"s_mpd",              1,       19},
-	{"s_spotify",          1,       18},
-	{"s_vpn",              1,       21},
+    {"s_cmus",             1,       11},
+    //{"s_mpd",              1,       19},
+    {"s_spotify",          1,       18},
+    {"s_vpn",              1,       21},
     {"s_cpu",              5,       12},
     {"s_hdd",           1200,       14},
     {"s_mem",              5,       13},

@@ -42,7 +42,7 @@ sudo pacman -Sy &> /dev/null
 
 programs=(
     cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm xdotool xautolock betterlockscreen 
-    yad libnotify wal-telegram-git pywalfox xsettingsd themix-gui-git
+    yad libnotify wal-telegram-git python-pywalfox xsettingsd themix-gui-git pacman-contrib
     themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh
     cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot pcmanfm gvfs
     fzf git gnu-free-fonts go gd btop mullvad-vpn-bin imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
@@ -102,18 +102,57 @@ for program in "${programs[@]}"; do
     fi
 done
 
-sudo pywalfox install &> /dev/null
-
 sleep 1 && clear
 
 if [ -d "/sys/class/power_supply" ] && [ "$(ls -A /sys/class/power_supply)" ]; then
-    echo "Installing dependencies..."
-    yay -S acpi acpilight
 
-    sudo chown "$USER" /sys/class/backlight/intel_backlight/brightness
+    notebook_programs=(acpi acpilight)
+    total=${#notebook_programs[@]}
+    count=0
+    bar_length=30
+    spinner_frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
 
-    echo "Enabling tap-to-click..."
-    sudo mkdir -p /etc/X11/xorg.conf.d && sudo tee <<'EOF' /etc/X11/xorg.conf.d/90-touchpad.conf 1> /dev/null
+    draw_progress_bar() {
+        local progress=$1
+        local total=$2
+        local percent=$(( 100 * progress / total ))
+        local filled=$(( bar_length * percent / 100 ))
+        local empty=$(( bar_length - filled ))
+        bar=$(printf "%0.s█" $(seq 1 $filled))
+        bar+=$(printf "%0.s▒" $(seq 1 $empty))
+        printf "[%s] %d/%d" "$bar" "$progress" "$total"
+    }
+
+    for program in "${notebook_programs[@]}"; do
+        count=$((count + 1))
+        if ! yay -Q "$program" &>/dev/null; then
+            (
+                i=0
+                while true; do
+                    printf "\r\033[K"
+                    draw_progress_bar "$count" "$total"
+                    frame="${spinner_frames[i]}"
+                    printf " Installing: %-25s %s" "$program" "$frame"
+                    sleep 0.1
+                    ((i=(i+1)%${#spinner_frames[@]}))
+                done
+            ) &
+            spinner_pid=$!
+            yay -S "$program" --noconfirm &>/dev/null
+            kill $spinner_pid &>/dev/null
+            wait $spinner_pid 2>/dev/null
+            printf "\r\033[K"
+            draw_progress_bar "$count" "$total"
+            printf " Installed: %-25s\n" "$program"
+        else
+            printf "\r\033[K"
+            draw_progress_bar "$count" "$total"
+            printf " Already installed: %-25s\n" "$program"
+        fi
+    done
+    sudo chown "$USER" /sys/class/backlight/intel_backlight/brightness &>/dev/null
+    sudo mkdir -p /etc/X11/xorg.conf.d
+    sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf >/dev/null <<'EOF'
 Section "InputClass"
     Identifier "touchpad"
     MatchIsTouchpad "on"
@@ -121,9 +160,8 @@ Section "InputClass"
     Option "Tapping" "on"
 EndSection
 EOF
-
-    echo "All tasks completed."
 fi
+
 sleep 1 && clear
 
 echo "Already have Oh-My-Zsh installed? (y/n)"
