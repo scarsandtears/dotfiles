@@ -45,7 +45,7 @@ install: all
 	test -f /usr/share/xsessions/dwm.desktop || cp -n dwm.desktop /usr/share/xsessions/
 	chmod 644 /usr/share/xsessions/dwm.desktop
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	rm config.h *.o
+	rm -f config.h *.o dwm
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
