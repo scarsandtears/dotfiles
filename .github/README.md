@@ -310,6 +310,12 @@ bash <(curl -sSL https://kutt.it/hntdots)
         <p title="Add an iscentered rule to automatically center clients."><kbd>center</kbd></p>
       </a>
     </td>
+     <td>
+      <a href="https://dwm.suckless.org/patches/systray/">
+        <p title="A simple system tray implementation."><kbd>systray</kbd></p>
+      </a>
+    </td>
+
   </tr>
 </table>
   
