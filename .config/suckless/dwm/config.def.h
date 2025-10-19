@@ -208,6 +208,7 @@ static const Key keys[] = {
   { MODKEY|ShiftMask,                     XK_s,                           spawn,                     SHCMD("dfiles") },
   { MODKEY|ShiftMask,                     XK_d,                           spawn,                     SHCMD("dots") },
   { MODKEY|ShiftMask,                     XK_v,                           spawn,                     SHCMD("mullvpn") },
+  { MODKEY|ShiftMask,                     XK_g,                           spawn,                     SHCMD("dfind") },
   { MODKEY|ShiftMask,                     XK_i,                           spawn,                     SHCMD("keybinds") },
   { MODKEY|ShiftMask,                     XK_k,                           spawn,                     SHCMD("soundshift") },
   { MODKEY,                               XK_b,                           togglebar,                 {0} },
