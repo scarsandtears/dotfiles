@@ -42,12 +42,9 @@ Super + .               →  Remove scratchpad
 
                              [ UTILITIES ]
 ------------------------------------------------------------------
-Super + Shift + N       →  Toggle night mode
+Super + Shift + D       →  Open DCENTRAL
 Super + Shift + E       →  Theme selector
-Super + Shift + S       →  Manage dotfiles
-Super + Shift + Y       →  Manage clipboard
 Super + Shift + V       →  VPN selector
-Super + Shift + K       →  Audio output chooser
 Super + Shift + P       →  Power menu
 
                           [ MEDIA & AUDIO ]

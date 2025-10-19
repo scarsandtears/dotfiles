@@ -33,7 +33,7 @@ for f in "${FILES[@]}"; do
     STYLED+=("$(printf '%-30s [%s]' "$base" "$dir")")
 done
 
-SELECTED=$(printf '%s\n' "${STYLED[@]}" | sort -u | dmenu -l 10 -p "Abrir no Neovim:")
+SELECTED=$(printf '%s\n' "${STYLED[@]}" | sort -u | dmenu -l 10 -p "Open in Neovim:")
 
 [ -z "$SELECTED" ] && exit
 
