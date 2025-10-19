@@ -14,3 +14,7 @@ notify.setup({
 })
 
 vim.notify = notify
+
+vim.schedule(function()
+  vim.notify = require("notify")
+end)
