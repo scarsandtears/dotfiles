@@ -56,6 +56,7 @@ return packer.startup(function(use)
   use "nvim-tree/nvim-web-devicons"
   use "windwp/nvim-autopairs"
   use "akinsho/bufferline.nvim"
+  use "rcarriga/nvim-notify"
   use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons',},}
   use "brianhuster/live-preview.nvim"
   use { 'vyfor/cord.nvim', run = ':Cord update', }
