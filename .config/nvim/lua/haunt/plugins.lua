@@ -45,9 +45,9 @@ return packer.startup(function(use)
   use "xiyaowong/transparent.nvim"
 
    -- My plugins here
-  use "wbthomason/packer.nvim" -- Have packer manage itself
-  use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
-  use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
+  use "wbthomason/packer.nvim"
+  use "nvim-lua/popup.nvim"
+  use "nvim-lua/plenary.nvim"
   use "nvim-telescope/telescope.nvim"
   use "nvim-telescope/telescope-media-files.nvim"
   use "lukas-reineke/indent-blankline.nvim"
@@ -57,7 +57,7 @@ return packer.startup(function(use)
   use "windwp/nvim-autopairs"
   use "akinsho/bufferline.nvim"
   use { 'nvim-tree/nvim-tree.lua', requires = { 'nvim-tree/nvim-web-devicons',},}
-  use ({ "brianhuster/live-preview.nvim", config = function() require("livepreview.config").set({ browser = "firefox", port = 8080, mappings = { open = "<leader>lp", close = "<leader>lq" } }) end })
+  use "brianhuster/live-preview.nvim"
   use { 'vyfor/cord.nvim', run = ':Cord update', }
   use "akinsho/toggleterm.nvim"
   use "goolord/alpha-nvim"
