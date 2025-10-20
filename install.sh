@@ -42,7 +42,7 @@ sudo pacman -Sy &> /dev/null
 
 programs=(
     cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm xdotool xautolock betterlockscreen 
-    yad libnotify wal-telegram-git python-pywalfox xsettingsd themix-gui-git pacman-contrib ripgrep fd
+    yad libnotify wal-telegram-git python-pywalfox xsettingsd themix-gui-git pacman-contrib ripgrep fd luarocks
     themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh
     cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot pcmanfm gvfs
     fzf git gnu-free-fonts go gd btop mullvad-vpn-bin imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
