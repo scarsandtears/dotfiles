@@ -17,6 +17,7 @@ File Manager
 Games
 	Steam	steam
 	Lutris	lutris
+	Heroic Games	heroic
 Terminal
 	st	st
 	Kitty	kitty 
