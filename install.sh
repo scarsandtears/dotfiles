@@ -38,6 +38,14 @@ fi
 
 sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//g' /etc/pacman.conf
 
+if ! grep -q "^Color" /etc/pacman.conf; then
+    sudo sed -i '/^\[options\]/a Color' /etc/pacman.conf
+fi
+
+if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
+    sudo sed -i '/^\[options\]/a ILoveCandy' /etc/pacman.conf
+fi
+
 sudo pacman -Sy &> /dev/null
 
 programs=(
