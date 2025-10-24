@@ -53,7 +53,7 @@ install: st
 	cp -f st.desktop $(DESTDIR)$(APPPREFIX)
 	mkdir -p $(DESTDIR)$(ICONPREFIX)
 	[ -f $(ICONNAME) ] && cp -f $(ICONNAME) $(DESTDIR)$(ICONPREFIX) || :
-	rm config.h *.o
+	rm config.h *.o st
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st

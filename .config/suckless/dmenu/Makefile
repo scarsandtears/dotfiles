@@ -52,7 +52,7 @@ install: all
 	sed "s/VERSION/$(VERSION)/g" < stest.1 > $(DESTDIR)$(MANPREFIX)/man1/stest.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/dmenu.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/stest.1
-	rm config.h *.o
+	rm config.h *.o dmenu
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/dmenu\
