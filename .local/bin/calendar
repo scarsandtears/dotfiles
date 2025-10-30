@@ -1,0 +1,19 @@
+#!/bin/bash
+
+monitors=$(xdpyinfo | grep dimensions | awk '{print $2}')
+
+IFS='x' read -r width height <<< "$monitors"
+
+if pgrep yad >/dev/null 2>&1; then
+    pkill yad
+else
+    if [ $1 -lt $width ]; then
+        posx=1650
+    else
+        posx=$((1630 + width / 2))
+    fi
+
+    posy=43
+
+    yad --title='Calendar' --calendar --no-buttons --undecorated --posx=$posx --posy=$posy &
+fi

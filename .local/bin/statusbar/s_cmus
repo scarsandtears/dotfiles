@@ -1,0 +1,55 @@
+OFFSET_FILE="/tmp/cmus_scroll_offset"
+MAX_LEN=30
+
+ICON=""
+
+if pgrep -x "cmus" > /dev/null; then
+    output=$(cmus-remote -Q)
+    artist=$(echo "$output" | awk '/^tag artist/ { $1=$2=""; print substr($0,3) }')
+    title=$(echo "$output" | awk '/^tag title/ { $1=$2=""; print substr($0,3) }')
+
+    if [ -z "$artist" ] && [ -z "$title" ]; then
+        echo ""
+    else
+        music_text="${artist}- ${title}"
+        music_text=$(echo "$music_text" | sed 's/ *$//')
+        len=$(echo -n "$music_text" | wc -m)
+
+        if [ "$len" -le "$MAX_LEN" ]; then
+            echo "$ICON $music_text"
+            echo 0 > "$OFFSET_FILE"
+        else
+            if [ -f "$OFFSET_FILE" ]; then
+                offset=$(cat "$OFFSET_FILE")
+            else
+                offset=0
+            fi
+
+            scroll_text="${music_text}   ${music_text}"
+
+            display=$(echo -n "$scroll_text" | cut -c $((offset + 1))-$((offset + MAX_LEN)))
+
+            display_len=$(echo -n "$display" | wc -m)
+            if [ "$display_len" -lt "$MAX_LEN" ]; then
+                spaces=$(printf '%*s' $((MAX_LEN - display_len)))
+                display="${display}${spaces}"
+            fi
+
+            echo "$ICON $display"
+
+            offset=$((offset + 1))
+            if [ "$offset" -ge "$len" ]; then
+                offset=0
+            fi
+            echo "$offset" > "$OFFSET_FILE"
+        fi
+    fi
+fi
+
+case $BLOCK_BUTTON in
+    1) xdotool key --clearmodifiers "Super_L+F4" ;;
+    3) cmus-remote -u ;;
+    4) statusvolume up ;;
+    5) statusvolume down ;;
+    6) st -e nvim "$0" ;;
+esac

@@ -1,0 +1,77 @@
+#!/bin/bash
+CONFIG_DIR="$HOME/.config"
+LOCAL_BIN="$HOME/.local/bin"
+HOME_ROOT="$HOME"
+CACHE_DIR="$HOME/.cache/dmenu-nvim-files"
+CACHE_FILE="$CACHE_DIR/dmenu_nvim_list.txt"
+CACHE_SOURCE_FILE="$CACHE_DIR/dmenu_nvim_paths.txt"
+mkdir -p "$CACHE_DIR"
+NVIM_COMMAND="st -e nvim"
+
+update_cache() {
+    notify-send "dmenu-nvim" "Updating file cache..."
+    if command -v fd >/dev/null 2>&1; then
+        {
+            [ -d "$CONFIG_DIR" ] && fd . "$CONFIG_DIR" -t f --follow
+            [ -d "$LOCAL_BIN" ] && fd . "$LOCAL_BIN" -t f --follow
+            fd . "$HOME_ROOT" -t f --follow --max-depth 1
+        } | awk '!seen[$0]++' > "$CACHE_SOURCE_FILE"
+    else
+        {
+            [ -d "$CONFIG_DIR" ] && find -L "$CONFIG_DIR" -type f
+            [ -d "$LOCAL_BIN" ] && find -L "$LOCAL_BIN" -type f
+            find -L "$HOME_ROOT" -maxdepth 1 -mindepth 1 -type f
+        } | awk '!seen[$0]++' > "$CACHE_SOURCE_FILE"
+    fi
+    if [ -s "$CACHE_SOURCE_FILE" ]; then
+        awk -v config="$CONFIG_DIR" -v bin="$LOCAL_BIN" -v home="$HOME_ROOT" '
+        {
+            f = $0
+            base = f
+            sub(/.*\//, "", base)
+            dir = "(other)"
+            if (f ~ "^" config "/") {
+                dir = ".config/" substr(f, length(config) + 2)
+            } else if (f ~ "^" bin "/") {
+                dir = ".local/bin"
+            } else if (f ~ "^" home "/[^/]*$") {
+                dir = "~"
+            }
+            printf "%-30s [%s] -- %s\n", base, dir, f
+        }' "$CACHE_SOURCE_FILE" | sort -u > "$CACHE_FILE"
+        notify-send "dmenu-nvim" "File cache updated: $(wc -l < "$CACHE_FILE" | tr -d ' ') files."
+    else
+        notify-send "dmenu-nvim" "Warning: No files found."
+        return 1
+    fi
+}
+
+AGE_LIMIT=1800
+if [ ! -f "$CACHE_FILE" ]; then
+    update_cache
+else
+    now=$(date +%s)
+    mtime=$(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)
+    age=$((now - mtime))
+    if (( age > AGE_LIMIT )); then
+        ( update_cache >/dev/null 2>&1 & disown )
+    fi
+fi
+
+if [ ! -s "$CACHE_FILE" ]; then
+    notify-send "dmenu-nvim" "Error: Cache is empty. Run the script again."
+    exit 1
+fi
+
+SELECTED_LINE=$(awk -F ' -- ' '{print $1}' "$CACHE_FILE" | dmenu -l 10 -p "Open in Neovim:")
+[ -z "$SELECTED_LINE" ] && exit
+
+FULL_PATH=$(grep -F "$SELECTED_LINE" "$CACHE_FILE" | head -n 1 | awk -F ' -- ' '{print $2}')
+
+if [ -n "$FULL_PATH" ] && [ -f "$FULL_PATH" ]; then
+    FILENAME=$(basename "$FULL_PATH")
+    notify-send "dmenu-nvim" "Opening $FILENAME in Neovim..."
+    setsid -f $NVIM_COMMAND "$FULL_PATH"
+else
+    notify-send "dmenu-nvim" "Error: File path not found or invalid."
+fi

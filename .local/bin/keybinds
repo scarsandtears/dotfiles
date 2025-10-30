@@ -1,0 +1,63 @@
+#!/bin/bash
+
+yad --center \
+    --width=700 --height=600 \
+    --title="DWM Keybinds" \
+    --no-buttons \
+    --margins=10 \
+    --fontname="monospace 10" \
+    --text-info \
+    --filename=<(cat <<'EOF'
+                          DWM KEYBINDS
+==================================================================
+
+                         [ WINDOW & LAYOUT ]
+------------------------------------------------------------------
+Super + Enter           →  New terminal
+Super + P               →  Open dmenu
+Super + Shift + Q       →  Close window
+Super + Shift + R       →  Restart DWM
+Super + ← / →           →  Focus window
+Super + Shift + ← / →   →  Move master
+Super + Shift + Space   →  Toggle floating
+Super + M/T/F/U/O       →  Layouts: Monocle / Tile / Spiral / Center / Grid
+Super + B               →  Toggle top bar
+
+                               [ TAGS ]
+------------------------------------------------------------------
+Super + 1..5            →  Switch tag
+Super + Shift + 1..5    →  Move window to tag
+
+                          [ MASTER & GAPS ]
+------------------------------------------------------------------
+Super + I / D           →  Increase / Decrease master
+Super + = / -           →  Adjust gaps
+Super + Alt + 0         →  Reset gaps
+
+                           [ SCRATCHPAD ]
+------------------------------------------------------------------
+Super + ,               →  Show/Add scratchpad
+Super + Shift + ,       →  Hide scratchpad
+Super + .               →  Remove scratchpad
+
+                             [ UTILITIES ]
+------------------------------------------------------------------
+Super + Shift + D       →  Open DCENTRAL
+Super + Shift + E       →  Theme selector
+Super + Shift + V       →  VPN selector
+Super + Shift + P       →  Power menu
+
+                          [ MEDIA & AUDIO ]
+------------------------------------------------------------------
+AudioPlay / Next / Prev         →  Media control
+AudioLowerVolume / RaiseVolume  →  Adjust volume
+AudioMute                       →  Toggle mute
+Alt + Z / F2 / F3               →  Mic mute / Mic volume -
+
+                        [ SCREENSHOTS & DISPLAY ]
+------------------------------------------------------------------
+Super + PrtSc           →  Fullscreen screenshot
+PrtSc                   →  Area screenshot
+MonBrightnessUp/Down    →  Adjust brightness
+EOF
+)

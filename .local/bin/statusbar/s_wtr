@@ -1,0 +1,25 @@
+#!/bin/sh
+
+update_weather() {
+    raw=$(curl -s "wttr.in?format=1" | tr -d '+')
+    clean=$(echo "$raw" | sed -E 's/^([[:space:]]*..)//; s/  */ /g; s/ *$//')
+    echo "$clean"
+}
+
+CACHE=/tmp/weather_cache
+CACHE_TIME=600
+
+if [ -f "$CACHE" ] && [ $(( $(date +%s) - $(stat -c %Y "$CACHE") )) -lt $CACHE_TIME ]; then
+    weather=$(cat "$CACHE")
+else
+    weather=$(update_weather)
+    [ -n "$weather" ] && echo "$weather" > "$CACHE"
+fi
+
+printf "%s\n" "$weather"
+
+case $BLOCK_BUTTON in
+    1) setsid -f st -n spterm -g 90x25 -e sh -c 'curl -s wttr.in | less -R' ;;
+    3) notify-send " Weather module" "Left click: full forecast\nRight click: info popup" ;;
+    6) st -e nvim "$0" ;;
+esac

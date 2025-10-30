@@ -1,0 +1,60 @@
+#!/bin/bash
+
+CACHE="$HOME/.cache/mullvad_relays"
+
+if [ ! -f "$CACHE" ] || [ $(($(date +%s) - $(date +%s -r "$CACHE"))) -ge 21600 ]; then
+    mullvad relay list > "$CACHE"
+fi
+
+flag() {
+    local code=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+    local first=$(( $(printf '%d' "'${code:0:1}") + 127397 ))
+    local second=$(( $(printf '%d' "'${code:1:1}") + 127397 ))
+    printf "\\U$(printf '%x' $first)\\U$(printf '%x' $second)"
+}
+
+menu_list=""
+metadata=""
+while IFS="|" read -r cc country city city_code; do
+    label="$(flag "$cc") $country - $city"
+    menu_list+="$label"$'\n'
+    metadata+="$label|$cc|$city_code"$'\n'
+done < <(
+awk '
+/^[A-Z]/ {
+    match($0, /^(.*) \(([a-z]{2})\)/, arr)
+    if (arr[1] != "") {
+        country=arr[1]
+        code=arr[2]
+    }
+}
+/^[ \t]+[A-Z]/ {
+    match($0, /^[ \t]+([^()]+) \(([a-z]{3})\)/, arr)
+    if (arr[1] != "") {
+        city=arr[1]
+        city_code=arr[2]
+        print code "|" country "|" city "|" city_code
+    }
+}
+' "$CACHE"
+)
+
+choice=$(echo -e "󰜺 Disconnect\n$menu_list" | dmenu -l 10 -p "VPN:")
+
+[ -z "$choice" ] && exit 0
+
+if [[ "$choice" == "󰜺 Disconnect" ]]; then
+    mullvad disconnect
+    notify-send "Mullvad VPN" "VPN disconnected"
+else
+    selected=$(echo "$metadata" | grep -F "$choice")
+    cc=$(echo "$selected" | awk -F"|" '{print $2}')
+    city_code=$(echo "$selected" | awk -F"|" '{print $3}')
+    
+    mullvad relay set location "$cc" "$city_code"
+    mullvad connect
+    
+    notify-send "Mullvad VPN" "${choice#* }"
+fi
+
+kill -41 $(pidof dwmblocks)

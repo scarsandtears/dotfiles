@@ -1,0 +1,20 @@
+#!/bin/bash
+
+status=$(mullvad status | grep -o "Connected\|Disconnected")
+if [[ "$status" != "Connected" ]]; then
+    echo ""
+    exit 0
+fi
+
+visible=$(mullvad status | grep "Visible location:" | sed 's/Visible location:[ \t]*//')
+
+country=$(echo "$visible" | awk -F, '{print $1}' | xargs)
+city=$(echo "$visible" | awk -F, '{print $2}' | sed -E 's/\..*//; s/^[ \t]*//' | xargs)
+
+echo " $country, $city"
+
+
+case $BLOCK_BUTTON in
+    1) notify-send "Mullvad VPN" "$country, $city"; ;;
+    6) st -e nvim "$0" ;;
+esac

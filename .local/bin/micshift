@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+declare -A sources
+
+while IFS=$'\t' read -r idx name rest; do
+    desc=$(pactl list sources | awk -v n="$name" '
+        $0 ~ "Name: "n {found=1}
+        found && /Description:/ {
+            sub(/^[[:space:]]*Description:[[:space:]]*/, "");
+            print;
+            exit;
+        }
+    ')
+    [[ -z "$desc" ]] && desc="$name"
+
+    if [[ "$desc" =~ [Uu][Ss][Bb] ]] || [[ "$desc" =~ Headset || "$desc" =~ H510 ]]; then
+        pretty="🎤 $desc"
+    elif [[ "$desc" =~ HDMI || "$desc" =~ Digital ]]; then
+        pretty="🔊 HDMI Mic - $desc"
+    else
+        pretty="🎤 $desc"
+    fi
+
+    sources["$pretty"]="$name"
+done < <(pactl list short sources)
+
+chosen_pretty=$(printf "%s\n" "${!sources[@]}" | sort | dmenu -l 5 -p "Choose audio input:")
+[[ -z "$chosen_pretty" ]] && exit 0
+
+chosen_source="${sources[$chosen_pretty]}"
+
+if [[ -n "$chosen_source" ]]; then
+    pactl set-default-source "$chosen_source" || { notify-send "Error" "Could not set $chosen_pretty"; exit 1; }
+
+    for input in $(pactl list short source-outputs | awk '{print $1}'); do
+        pactl move-source-output "$input" "$chosen_source" 2>/dev/null || true
+    done
+
+    notify-send "Microphone" "Now: $chosen_pretty"
+fi
