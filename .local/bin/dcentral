@@ -1,6 +1,6 @@
 #!/bin/bash
 
-choice=$(printf "Edit Files\nSearch Files\nOpen Dotfiles Path\nSelect Wallpaper\nSelect Audio Output\nSelect Microphone Output\nWi-Fi\nVPN\nCopy Emoji\nOpen Clipboard\nNight Mode\nShow System Keybinds\nAndroid Mount" | dmenu -l 15 -p "DCENTRAL")
+choice=$(printf "Edit Files\nSearch Files\nOpen Dotfiles Path\nSelect Wallpaper\nSelect Audio Output\nSelect Microphone Output\nWi-Fi\nWebcam\nVPN\nCopy Emoji\nOpen Clipboard\nNight Mode\nShow System Keybinds\nAndroid Mount" | dmenu -l 15 -p "DCENTRAL")
 
 case "$choice" in
     "Edit Files") ~/.local/bin/dfiles ;;
@@ -10,6 +10,7 @@ case "$choice" in
     "Select Audio Output") ~/.local/bin/soundshift ;;
     "Select Microphone Output") ~/.local/bin/micshift ;;
     "Wi-Fi") ~/.local/bin/dwifi ;;
+    "Webcam") ~/.local/bin/webcam ;;
     "Copy Emoji") ~/.local/bin/emoji ;;
     "Open Clipboard") clipmenu ;;
     "VPN") ~/.local/bin/mullvpn ;;

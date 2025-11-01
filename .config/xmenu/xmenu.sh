@@ -18,6 +18,7 @@ Games
 	Steam	steam
 	Lutris	lutris
 	Heroic Games	heroic
+	PCSX2	pcsx2
 Terminal
 	st	st
 	Kitty	kitty 

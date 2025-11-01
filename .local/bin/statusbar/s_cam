@@ -1,0 +1,12 @@
+DEVICE="/dev/video0"
+
+if fuser "$DEVICE" &>/dev/null; then
+    echo -en ""
+else
+    echo -en ""
+fi
+
+case $BLOCK_BUTTON in
+    3) notify-send " Webcam module" "Shows   when webcam is active." ;;
+    6) st -e nvim "$0" ;;
+esac

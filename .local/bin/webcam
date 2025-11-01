@@ -1,0 +1,23 @@
+#!/bin/bash
+
+DEVICE="/dev/video0"
+BLOCK_SIGNAL=23
+
+CAMERA_NAME=$(v4l2-ctl --device="$DEVICE" --info 2>/dev/null | awk -F': ' '/Card type/ {print $2}')
+
+if [ -z "$CAMERA_NAME" ]; then
+    CAMERA_NAME="$DEVICE"
+fi
+
+if [ ! -e "$DEVICE" ]; then
+    notify-send -u critical -i camera-web-symbolic "Webcam Error" "Device $DEVICE not found."
+    exit 1
+fi
+
+notify-send -u normal -i camera-web-symbolic "Webcam Active" "$CAMERA_NAME is now streaming."
+kill -RTMIN+$BLOCK_SIGNAL $(pidof dwmblocks) 2>/dev/null
+
+ffplay -hide_banner -loglevel error -f v4l2 -i "$DEVICE" -window_title "$CAMERA_NAME" -vf "format=yuv420p" -fflags nobuffer
+
+notify-send -u low -i camera-web-off-symbolic "Webcam Stopped" "$CAMERA_NAME stream closed."
+kill -RTMIN+$BLOCK_SIGNAL $(pidof dwmblocks) 2>/dev/null

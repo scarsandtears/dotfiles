@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 default_source=$(pactl info | awk -F': ' '/Default Source/ {print $2}')
 
 read isMute vol <<< $(pactl list sources | awk -v src="$default_source" '
