@@ -7,6 +7,34 @@ else
 fi
 
 case $BLOCK_BUTTON in
+    1)
+        WINDOW_ID=$(xdotool search --name "Webcam" | head -n 1)
+        if [[ -z "$WINDOW_ID" ]]; then
+            notify-send -u critical -i camera-web-symbolic " Snapshot failed" "Webcam window not found."
+            exit 1
+        fi
+
+        CAMERA_NAME=$(v4l2-ctl --device="$DEVICE" --info 2>/dev/null | awk -F': ' '/Card type/ {print $2}')
+        [[ -z "$CAMERA_NAME" ]] && CAMERA_NAME="UnknownCam"
+        SAFE_NAME=$(echo "$CAMERA_NAME" | tr ' /' '_')
+
+        FOLDER="$HOME/Images/$SAFE_NAME"
+        mkdir -p "$FOLDER"
+
+        FILENAME="$FOLDER/$(date +'%Y-%m-%d_%H-%M-%S').png"
+
+        GEOM=$(xwininfo -id "$WINDOW_ID" | awk '/geometry/ {print $2}')
+        X=$(xwininfo -id "$WINDOW_ID" | awk '/Absolute upper-left X:/ {print $4}')
+        Y=$(xwininfo -id "$WINDOW_ID" | awk '/Absolute upper-left Y:/ {print $4}')
+
+        import -window root -crop "$GEOM+$X+$Y" "$FILENAME" 2>/dev/null
+
+        if [[ -f "$FILENAME" ]]; then
+            notify-send -u low -i "$FILENAME" " Snapshot saved" "Saved to: $FILENAME"
+        else
+            notify-send -u critical -i camera-web-symbolic "  Snapshot failed" "Could not capture webcam window."
+        fi
+        ;;
     3)
         CAMERA_NAME=$(v4l2-ctl --device="$DEVICE" --info 2>/dev/null | awk -F': ' '/Card type/ {print $2}')
         [[ -z "$CAMERA_NAME" ]] && CAMERA_NAME="Unknown device"
