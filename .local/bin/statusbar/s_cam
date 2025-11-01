@@ -7,6 +7,29 @@ else
 fi
 
 case $BLOCK_BUTTON in
-    3) notify-send " Webcam module" "Shows   when webcam is active." ;;
-    6) st -e nvim "$0" ;;
+    3)
+        CAMERA_NAME=$(v4l2-ctl --device="$DEVICE" --info 2>/dev/null | awk -F': ' '/Card type/ {print $2}')
+        [[ -z "$CAMERA_NAME" ]] && CAMERA_NAME="Unknown device"
+
+        PIDS=$(fuser "$DEVICE" 2>/dev/null | awk '{for(i=1;i<=NF;i++) printf "%s ", $i}')
+        if [[ -z "$PIDS" ]]; then
+            STATUS="No process using the device."
+        else
+            STATUS=""
+            for PID in $PIDS; do
+                PROC=$(ps -p "$PID" -o comm= 2>/dev/null)
+                [[ -n "$PROC" ]] && STATUS+="$(printf '%s (PID %s)\n' "$PROC" "$PID")"
+            done
+            STATUS="Used by:\n$STATUS"
+        fi
+
+        notify-send -u normal -i camera-web-symbolic "  Webcam status" \
+"Device: $CAMERA_NAME
+Path: $DEVICE
+$STATUS
+Checked at: $(date +'%H:%M:%S')"
+        ;;
+    6)
+        st -e nvim "$0"
+        ;;
 esac

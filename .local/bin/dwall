@@ -1,5 +1,3 @@
-#!/bin/sh
-
 is_process_running() {
   pgrep -x "$1" >/dev/null
 }

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 xmenu <<EOF | sh &
 Change Wallpaper	wg
 Color Picker	colorpicker

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 cat <<EOF | xmenu
 󰽙  Tiled	0
   Floating	1

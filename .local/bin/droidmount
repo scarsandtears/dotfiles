@@ -1,12 +1,9 @@
-#!/bin/sh
 dir=~/Documents/android
 
-# Make the cell directory if it doesn't exist
 if [ ! -d "$dir" ]; then
   mkdir "$dir"
 fi
 
-# Select device
 Devices=$(simple-mtpfs -l)
 
 if [ ! -n "$Devices" ]; then

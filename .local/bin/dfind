@@ -1,4 +1,3 @@
-#!/bin/bash
 CONFIG_DIR="$HOME/.config"
 LOCAL_BIN="$HOME/.local/bin"
 HOME_ROOT="$HOME"

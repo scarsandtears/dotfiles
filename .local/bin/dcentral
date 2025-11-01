@@ -1,5 +1,3 @@
-#!/bin/bash
-
 choice=$(printf "Edit Files\nSearch Files\nOpen Dotfiles Path\nSelect Wallpaper\nSelect Audio Output\nSelect Microphone Output\nWi-Fi\nWebcam\nVPN\nCopy Emoji\nOpen Clipboard\nNight Mode\nShow System Keybinds\nAndroid Mount" | dmenu -l 15 -p "DCENTRAL")
 
 case "$choice" in
