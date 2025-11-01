@@ -1,5 +1,3 @@
-#!/bin/bash
-
 color=$(gpick --single --output)
 if [ -n "$color" ]; then
     echo -n "$color" | xclip -selection clipboard

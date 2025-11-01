@@ -1,5 +1,3 @@
-#!/bin/bash
-
 NUM_UPDATES=$( (checkupdates 2>/dev/null; yay -Qua 2>/dev/null) | wc -l )
 if [ "$NUM_UPDATES" -gt 0 ]; then
     echo " $NUM_UPDATES"

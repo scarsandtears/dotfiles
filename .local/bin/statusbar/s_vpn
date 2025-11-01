@@ -1,5 +1,3 @@
-#!/bin/bash
-
 status=$(mullvad status | grep -o "Connected\|Disconnected")
 if [[ "$status" != "Connected" ]]; then
     echo ""

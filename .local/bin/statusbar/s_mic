@@ -1,26 +1,21 @@
 #!/usr/bin/env bash
 
-# Pega o microfone padrão
 default_source=$(pactl info | awk -F': ' '/Default Source/ {print $2}')
 
-# Pega mute e volume
 read isMute vol <<< $(pactl list sources | awk -v src="$default_source" '
     $0 ~ "Name: "src {found=1}
     found && /Mute:/ {mute=$2}
     found && /Volume:/ {for(i=1;i<=NF;i++) if($i ~ /[0-9]+%/) {vol=$i; print mute, vol; exit}}
 ')
 
-# Remove o % do volume
 vol=${vol//%/}
 
-# Decide o ícone
 if [[ "$isMute" == "yes" ]] || [[ "$vol" -eq 0 ]]; then
-    echo -en ""
+    echo -en "󰍭"
 else
     echo -en " $vol%"
 fi
 
-# Botões (opcional)
 case $BLOCK_BUTTON in
     1) xdotool key --clearmodifiers "Super_L+F6"; kill -41 $(pidof dwmblocks) ;;
     2) statusmic mute ;;

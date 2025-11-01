@@ -1,5 +1,3 @@
-#!/bin/sh
-
 update_weather() {
     raw=$(curl -s "wttr.in?format=1" | tr -d '+')
     clean=$(echo "$raw" | sed -E 's/^([[:space:]]*..)//; s/  */ /g; s/ *$//')
