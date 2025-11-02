@@ -102,6 +102,7 @@ static const Rule rules[] = {
   { "steam",                     NULL,                 "Steam",              1<<2,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "TelegramDesktop",           NULL,                    NULL,              1<<3,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "qBittorrent",               NULL,                    NULL,              1<<4,        1,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
+  { "Blueman-manager",           NULL,     "Bluetooth Devices",                 0,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "St",                        NULL,                    NULL,                 0,        1,          0,          1,          0,       -1,     -1,-1,-1,-1,        -1      },
   { "Pcmanfm",                   NULL,                    NULL,                 0,        0,          0,          1,          0,       -1,     -1,-1,-1,-1,        -1      },
   { "Pcmanfm",                   NULL,          "Execute File",                 0,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },

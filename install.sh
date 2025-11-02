@@ -114,7 +114,6 @@ done
 sleep 1 && clear
 
 if [ -d "/sys/class/power_supply" ] && [ "$(ls -A /sys/class/power_supply)" ]; then
-
     notebook_programs=(acpi acpilight)
     total=${#notebook_programs[@]}
     count=0
@@ -134,14 +133,17 @@ if [ -d "/sys/class/power_supply" ] && [ "$(ls -A /sys/class/power_supply)" ]; t
 
     for program in "${notebook_programs[@]}"; do
         count=$((count + 1))
+        status="Already installed"
+
         if ! yay -Q "$program" &>/dev/null; then
+            status="Installing"
             (
                 i=0
                 while true; do
                     printf "\r\033[K"
                     draw_progress_bar "$count" "$total"
                     frame="${spinner_frames[i]}"
-                    printf " Installing: %-25s %s" "$program" "$frame"
+                    printf " %-25s %s" "$status: $program" "$frame"
                     sleep 0.1
                     ((i=(i+1)%${#spinner_frames[@]}))
                 done
@@ -150,15 +152,16 @@ if [ -d "/sys/class/power_supply" ] && [ "$(ls -A /sys/class/power_supply)" ]; t
             yay -S "$program" --noconfirm &>/dev/null
             kill $spinner_pid &>/dev/null
             wait $spinner_pid 2>/dev/null
-            printf "\r\033[K"
-            draw_progress_bar "$count" "$total"
-            printf " Installed: %-25s\n" "$program"
-        else
-            printf "\r\033[K"
-            draw_progress_bar "$count" "$total"
-            printf " Already installed: %-25s\n" "$program"
         fi
+
+        printf "\r\033[K"
+        draw_progress_bar "$count" "$total"
+        printf " %-25s" "$status: $program"
     done
+
+    echo ""
+fi
+
     sudo chown "$USER" /sys/class/backlight/intel_backlight/brightness &>/dev/null
     sudo mkdir -p /etc/X11/xorg.conf.d
     sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf >/dev/null <<'EOF'
@@ -169,6 +172,57 @@ Section "InputClass"
     Option "Tapping" "on"
 EndSection
 EOF
+
+sleep 1 && clear
+
+if rfkill list bluetooth &>/dev/null; then
+    bluetooth_packages=(bluez bluez-utils blueman)
+    total=${#bluetooth_packages[@]}
+    count=0
+    bar_length=40
+    spinner_frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+
+    draw_progress_bar() {
+        local progress=$1
+        local total=$2
+        local percent=$(( 100 * progress / total ))
+        local filled=$(( bar_length * percent / 100 ))
+        local empty=$(( bar_length - filled ))
+        bar=$(printf "%0.s█" $(seq 1 $filled))
+        bar+=$(printf "%0.s▒" $(seq 1 $empty))
+        printf "[%s] %d/%d" "$bar" "$progress" "$total"
+    }
+
+    for pkg in "${bluetooth_packages[@]}"; do
+        count=$((count + 1))
+        status="Already installed"
+        if ! pacman -Qi "$pkg" &>/dev/null; then
+            status="Installing"
+            (
+                i=0
+                while true; do
+                    printf "\r\033[K"
+                    draw_progress_bar "$count" "$total"
+                    frame="${spinner_frames[i]}"
+                    printf " %-25s %s" "$status: $pkg" "$frame"
+                    sleep 0.1
+                    ((i=(i+1)%${#spinner_frames[@]}))
+                done
+            ) &
+            spinner_pid=$!
+            sudo pacman -S --noconfirm "$pkg" &>/dev/null
+            kill $spinner_pid &>/dev/null
+            wait $spinner_pid 2>/dev/null
+        fi
+        printf "\r\033[K"
+        draw_progress_bar "$count" "$total"
+        printf " %-25s" "$status: $pkg"
+    done
+    echo ""
+
+    sudo systemctl enable --now bluetooth.service &>/dev/null
+else
+    :
 fi
 
 sleep 1 && clear
@@ -259,16 +313,8 @@ ln -sf "$path/.config/xmenu/xmenu.sh" "$HOME/.local/bin/menu"
 CURSOR_TARGET="/usr/share/icons/Bibata-Modern-Classic/cursors"
 CURSOR_LINK="/usr/share/icons/default/cursors"
 
-if [ ! -d "$CURSOR_TARGET" ]; then
-    echo "Cursor theme target directory not found: $CURSOR_TARGET"
-    echo "Skipping cursor fix. Please install 'Bibata-Modern-Classic' theme."
-
-elif [ -L "$CURSOR_LINK" ] && [ "$(readlink -f "$CURSOR_LINK")" = "$CURSOR_TARGET" ]; then
-    echo "Qt6 cursor fix (Bibata) already in place."
-else
-    echo "Applying Qt6 cursor fix (Bibata)..."
+if [ -d "$CURSOR_TARGET" ]; then
     sudo ln -sf "$CURSOR_TARGET" "$CURSOR_LINK"
-    echo "Link created/updated: $CURSOR_LINK -> $CURSOR_TARGET"
 fi
 
 sleep 1 && clear
@@ -277,11 +323,9 @@ echo "Preparing folders..."
 	sleep 1 && clear
 if [ ! -e $HOME/.config/user-dirs.dirs ]; then
 	xdg-user-dirs-update
-	echo "Creating xdg-user-dirs..."
 	sleep 1 && clear
 else
 	xdg-user-dirs-update
-	echo "user-dirs.dirs already exists!"
 	sleep 1 && clear
 fi
 

@@ -1,0 +1,30 @@
+ICON=""
+TITLE="$ICON  Bluetooth"
+
+if ! command -v bluetoothctl &>/dev/null; then
+    notify-send -u critical -i "$ICON" "$TITLE" "  BlueZ is not installed"
+    exit 1
+fi
+
+if ! systemctl is-active --quiet bluetooth.service; then
+    sudo systemctl start bluetooth.service
+    sleep 1
+fi
+
+if ! bluetoothctl list | grep -q "Controller"; then
+    notify-send -u critical -i "$ICON" "$TITLE" "  No Bluetooth adapter found"
+    exit 1
+fi
+
+if ! command -v blueman-manager &>/dev/null; then
+    notify-send -u critical -i "$ICON" "$TITLE" "  Blueman is not installed"
+    exit 1
+fi
+
+if ! pgrep -x "blueman-applet" >/dev/null; then
+    blueman-applet &
+    sleep 1
+fi
+
+notify-send -u normal -i "$ICON" "$TITLE" "󰂯  Opening Blueman..."
+blueman-manager &

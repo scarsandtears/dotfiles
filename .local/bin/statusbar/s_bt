@@ -1,0 +1,50 @@
+ICON=""
+SIG=24
+
+show_status() {
+    INFO=$(bluetoothctl info | awk '/Device /{dev=$2} /Connected: yes/{print dev}' | head -n1)
+    [ -z "$INFO" ] && echo "" && exit 0
+
+    NAME=$(bluetoothctl info "$INFO" | awk -F': ' '/Alias:/ {print $2}' | head -n1)
+    [ -z "$NAME" ] && NAME=$(bluetoothctl info "$INFO" | awk -F': ' '/Name:/ {print $2}' | head -n1)
+    NAME=$(echo "$NAME" | sed 's/ (0x[0-9A-Fa-f]\+)//')
+
+    BATTERY=$(bluetoothctl info "$INFO" | awk -F': ' '/Battery Percentage:/ {print $2}' | tr -d '%')
+
+    if [ -n "$BATTERY" ]; then
+        echo "$ICON $NAME ${BATTERY}%"
+    else
+        echo "$ICON $NAME"
+    fi
+}
+
+show_status
+
+case $BLOCK_BUTTON in
+    1)
+        CONNECTED=$(bluetoothctl info | grep "Connected: yes" -B5 | grep "Device" | head -n1 | awk '{print $2}')
+        if [ -z "$CONNECTED" ]; then
+            notify-send -u low -i audio-headphones-symbolic " No headphones connected"
+            exit 0
+        fi
+
+        NAME=$(bluetoothctl info "$CONNECTED" | awk -F': ' '/Alias:/ {print $2}' | head -n1)
+        [ -z "$NAME" ] && NAME=$(bluetoothctl info "$CONNECTED" | awk -F': ' '/Name:/ {print $2}' | head -n1)
+        NAME=$(echo "$NAME" | sed 's/ (0x[0-9A-Fa-f]\+)//')
+
+        BATTERY=$(bluetoothctl info "$CONNECTED" | awk -F': ' '/Battery Percentage:/ {print $2}' | tr -d '%')
+        MAC=$CONNECTED
+
+        MSG="Name: ${NAME:-Unknown}\nMAC: $MAC"
+        [ -n "$BATTERY" ] && MSG+="\nBattery: ${BATTERY}%"
+        MSG+="\nTime: $(date +'%H:%M:%S')"
+
+        notify-send -u normal -i audio-headphones-symbolic " Headphones connected" "$MSG"
+        ;;
+    3)
+        blueman-manager
+        ;;
+    6)
+        st -e nvim "$0"
+        ;;
+esac
