@@ -1,4 +1,4 @@
-choice=$(printf "Edit Files\nSearch Files\nOpen Dotfiles Path\nSelect Wallpaper\nSelect Audio Output\nSelect Microphone Output\nWi-Fi\nWebcam\nBluetooth\nVPN\nCopy Emoji\nOpen Clipboard\nNight Mode\nShow System Keybinds\nAndroid Mount" | dmenu -l 15 -p "DCENTRAL")
+choice=$(printf "Edit Files\nSearch Files\nOpen Dotfiles Path\nSelect Wallpaper\nSelect Audio Output\nSelect Microphone Output\nPhone Mirror\nWi-Fi\nWebcam\nBluetooth\nVPN\nCopy Emoji\nOpen Clipboard\nNight Mode\nShow System Keybinds\nAndroid Mount" | dmenu -l 15 -p "DCENTRAL")
 
 case "$choice" in
     "Edit Files") ~/.local/bin/dfiles ;;
@@ -7,6 +7,7 @@ case "$choice" in
     "Select Wallpaper") ~/.local/bin/wg ;;
     "Select Audio Output") ~/.local/bin/soundshift ;;
     "Select Microphone Output") ~/.local/bin/micshift ;;
+    "Phone Mirror") ~/.local/bin/phoneview ;;
     "Wi-Fi") ~/.local/bin/dwifi ;;
     "Webcam") ~/.local/bin/webcam ;;
     "Bluetooth") ~/.local/bin/bluetooth ;;
