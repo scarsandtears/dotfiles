@@ -175,7 +175,17 @@ EOF
 
 sleep 1 && clear
 
-if rfkill list bluetooth &>/dev/null; then
+#!/bin/bash
+
+has_bluetooth_adapter() {
+    if command -v btmgmt &>/dev/null; then
+        btmgmt info &>/dev/null && return 0
+    fi
+    [ -d /sys/class/bluetooth ] && [ "$(ls -A /sys/class/bluetooth)" ] && return 0
+    return 1
+}
+
+if has_bluetooth_adapter; then
     bluetooth_packages=(bluez bluez-utils blueman)
     total=${#bluetooth_packages[@]}
     count=0
@@ -218,8 +228,8 @@ if rfkill list bluetooth &>/dev/null; then
         draw_progress_bar "$count" "$total"
         printf " %-25s" "$status: $pkg"
     done
-    echo ""
 
+    echo ""
     sudo systemctl enable --now bluetooth.service &>/dev/null
 else
     :
