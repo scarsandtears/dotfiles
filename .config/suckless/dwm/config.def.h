@@ -98,6 +98,7 @@ static const Rule rules[] = {
   { "firefox",                   NULL,                    NULL,              1<<1,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "firefox",                   NULL,               "Library",                 0,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "qutebrowser",               NULL,                    NULL,              1<<1,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
+  { "Sxiv",                      NULL,                    NULL,                 0,        1,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "steam",                     NULL,                    NULL,              1<<2,        0,          1,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "steam",                     NULL,                 "Steam",              1<<2,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
   { "TelegramDesktop",           NULL,                    NULL,              1<<3,        0,          0,          0,         -1,       -1,     -1,-1,-1,-1,        -1      },
