@@ -58,7 +58,7 @@ programs=(
     xdg-user-dirs qutebrowser ranger syncthing sxiv telegram-desktop tree ttf-jetbrains-mono-nerd ttf-font-awesome qbittorrent
     gpick ueberzugpp redshift p7zip unzip epub-thumbnailer-git python-pdftotext poppler xorg-xinput vim webkit2gtk xclip yt-dlp
     zathura zathura-pdf-mupdf zip xorg-server xorg-xinit libx11 libxinerama libxft base base-devel qt5ct qt6ct libreoffice-fresh
-    pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber xorg-xwininfo
+    pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber xorg-xwininfo scrcpy
 )
 
 total=${#programs[@]}

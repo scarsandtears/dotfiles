@@ -1,0 +1,82 @@
+DMENU_LINES=10
+KNOWN_DEVICES_FILE="$HOME/.cache/phoneview_known_devices"
+
+mkdir -p "$(dirname "$KNOWN_DEVICES_FILE")"
+touch "$KNOWN_DEVICES_FILE"
+
+[ -z "$DISPLAY" ] && export DISPLAY=:0
+
+get_name() {
+    adb -s "$1" shell getprop ro.product.model 2>/dev/null | tr -d '\r'
+}
+
+get_wifi_ip() {
+    adb -s "$1" shell ip -f inet addr show wlan0 2>/dev/null | awk '/inet /{print $2}' | cut -d/ -f1
+}
+
+save_ip() {
+    local name="$1"
+    local ip="$2"
+    grep -v "^$name:" "$KNOWN_DEVICES_FILE" > "${KNOWN_DEVICES_FILE}.tmp"
+    echo "$name:$ip" >> "${KNOWN_DEVICES_FILE}.tmp"
+    mv "${KNOWN_DEVICES_FILE}.tmp" "$KNOWN_DEVICES_FILE"
+}
+
+get_known_ip() {
+    local name="$1"
+    grep "^$name:" "$KNOWN_DEVICES_FILE" | cut -d: -f2
+}
+
+is_online() {
+    adb devices | awk 'NR>1 && $2=="device"{print $1}' | grep -q "^$1$"
+}
+
+MENU_ITEMS=""
+declare -A DEVICE_MAP
+
+for DEV in $(adb devices | awk 'NR>1 && $2=="device" && $1 !~ /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'); do
+    NAME=$(get_name "$DEV")
+    DISPLAY_NAME="$NAME [USB]"
+    DEVICE_MAP["$DISPLAY_NAME"]="$DEV"
+    MENU_ITEMS+="$DISPLAY_NAME\n"
+done
+
+for DEV in $(adb devices | awk 'NR>1 && $2=="device" && $1 ~ /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'); do
+    NAME=$(get_name "$DEV")
+    DISPLAY_NAME="$NAME [Wi-Fi]"
+    DEVICE_MAP["$DISPLAY_NAME"]="$DEV"
+    MENU_ITEMS+="$DISPLAY_NAME\n"
+done
+
+[ -z "$MENU_ITEMS" ] && { notify-send " PhoneView" "No devices found"; exit 1; }
+
+CHOICE=$(echo -e "$MENU_ITEMS" | dmenu -l $DMENU_LINES -p " Select device:")
+[ -z "$CHOICE" ] && exit 0
+DEVICE="${DEVICE_MAP[$CHOICE]}"
+
+if [[ "$CHOICE" == *"[USB]"* ]]; then
+    IP=$(get_wifi_ip "$DEVICE")
+    [ -z "$IP" ] && { notify-send " PhoneView" "Cannot get Wi-Fi IP"; exit 1; }
+    adb disconnect "$IP:5555" >/dev/null 2>&1
+    adb -s "$DEVICE" tcpip 5555
+    sleep 3
+    adb connect "$IP:5555"
+    DEVICE="$IP:5555"
+    NAME=$(get_name "$DEVICE")
+    save_ip "$NAME" "$IP"
+    notify-send " PhoneView" "Connected $NAME via TCP/IP"
+fi
+
+if [[ "$CHOICE" == *"[Wi-Fi]"* ]]; then
+    NAME=$(get_name "$DEVICE")
+    KNOWN_IP=$(get_known_ip "$NAME")
+    if [ -n "$KNOWN_IP" ]; then
+        adb disconnect "$KNOWN_IP:5555" >/dev/null 2>&1
+        DEVICE="$KNOWN_IP:5555"
+        adb connect "$DEVICE" >/dev/null 2>&1
+        notify-send " PhoneView" "Reconnected $NAME via Wi-Fi"
+    fi
+fi
+
+notify-send " PhoneView" "Launching scrcpy for $(get_name "$DEVICE")"
+scrcpy -s "$DEVICE"
