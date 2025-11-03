@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 declare -A sources
 
 while IFS=$'\t' read -r idx name rest; do
@@ -7,10 +5,8 @@ while IFS=$'\t' read -r idx name rest; do
         $0 ~ "Name: "n {found=1}
         found && /Description:/ {
             sub(/^[[:space:]]*Description:[[:space:]]*/, "");
-            print;
-            exit;
-        }
-    ')
+            print; exit;
+        }')
     [[ -z "$desc" ]] && desc="$name"
 
     if [[ "$desc" =~ [Uu][Ss][Bb] ]] || [[ "$desc" =~ Headset || "$desc" =~ H510 ]]; then
@@ -20,7 +16,6 @@ while IFS=$'\t' read -r idx name rest; do
     else
         pretty="🎤 $desc"
     fi
-
     sources["$pretty"]="$name"
 done < <(pactl list short sources)
 
@@ -30,11 +25,17 @@ chosen_pretty=$(printf "%s\n" "${!sources[@]}" | sort | dmenu -l 5 -p "Choose au
 chosen_source="${sources[$chosen_pretty]}"
 
 if [[ -n "$chosen_source" ]]; then
-    pactl set-default-source "$chosen_source" || { notify-send "Error" "Could not set $chosen_pretty"; exit 1; }
+    pactl suspend-source "$chosen_source" 0
+    pactl set-source-mute "$chosen_source" 0
+    pactl set-source-volume "$chosen_source" 65536
+    pactl set-default-source "$chosen_source" || {
+        notify-send " Error" "Could not set $chosen_pretty"
+        exit 1
+    }
 
     for input in $(pactl list short source-outputs | awk '{print $1}'); do
         pactl move-source-output "$input" "$chosen_source" 2>/dev/null || true
     done
 
-    notify-send "Microphone" "Now: $chosen_pretty"
+    notify-send " Microphone" "Now using: $chosen_pretty"
 fi
