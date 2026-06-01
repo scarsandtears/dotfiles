@@ -1,0 +1,20 @@
+#!/bin/sh
+
+while true; do
+    for id in $(xinput list | awk '
+    /slave  pointer/ &&
+    (/Beken 2\.4G Wireless Device/ || /Beken USB Gaming Mouse/)
+    {
+        match($0,/id=[0-9]+/)
+        print substr($0,RSTART+3,RLENGTH-3)
+    }'); do
+
+        current=$(xinput get-button-map "$id" 2>/dev/null)
+
+        if [ "$current" != "1 2 3 5 4 6 7 8 9" ]; then
+            xinput set-button-map "$id" 1 2 3 5 4 6 7 8 9 >/dev/null 2>&1
+        fi
+    done
+
+    sleep 2
+done

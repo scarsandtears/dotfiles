@@ -2,6 +2,12 @@
 # XINITRC - DWM startup configuration (Arch Linux)
 # ==============================================================
 
+export XDG_CURRENT_DESKTOP=dwm
+export XDG_SESSION_DESKTOP=dwm
+
+systemctl --user import-environment DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP
+dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP
+
 # Paths for system and user Xresources files
 sysresources=/etc/X11/xinit/Xresources
 userresources=$HOME/.Xresources
@@ -38,6 +44,9 @@ picom &
 
 # Notification daemon
 dunst &
+
+# Fix reverse scroll
+fixscroll &
 
 # Status bar
 dwmblocks &

@@ -1,25 +1,27 @@
-dir=~/Documents/android
-
-if [ ! -d "$dir" ]; then
-  mkdir "$dir"
-fi
-
+#!/bin/sh
+dir="$HOME/Documents/android"
+mkdir -p "$dir"
 Devices=$(simple-mtpfs -l)
 
-if [ ! -n "$Devices" ]; then
-  notify-send "No devices found"
-  exit
-else
-  Device=$(echo "$Devices" | dmenu -l 10 -p "Select device:" || notify-send "No device selected")
-  Id=${Device%%:*}
-  Name=${Device##*: }
-  if [ ! -d "$dir/$Name" ]; then
-    mkdir "$dir/$Name"
-  fi
+if [ -z "$Devices" ]; then
+    notify-send "No devices found"
+    exit 1
 fi
 
-if [ ! -n "$(find "$dir/$Name" -maxdepth 0 -empty)" ]; then
-  fusermount -u "$dir/$Name" && notify-send "Android Mount" "Device unmounted"
+Device=$(echo "$Devices" | dmenu -l 10 -p "Select device:")
+
+if [ -z "$Device" ]; then
+    notify-send "No device selected"
+    exit 1
+fi
+
+Id="${Device%%:*}"
+Name="${Device##*: }"
+
+mkdir -p "$dir/$Name"
+
+if [ -n "$(ls -A "$dir/$Name" 2>/dev/null)" ]; then
+    fusermount -u "$dir/$Name" && notify-send "Android Mount" "Device unmounted"
 else
-  simple-mtpfs --device "$Id" "$dir/$Name" && notify-send "Android mount" "Device mounted in $dir/$Name"
+    simple-mtpfs --device "$Id" "$dir/$Name" && notify-send "Android Mount" "Mounted in $dir/$Name"
 fi

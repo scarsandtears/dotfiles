@@ -56,7 +56,7 @@ programs=(
     fzf git gnu-free-fonts go gd btop mullvad-vpn-bin imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
     numlockx obs-studio openssh perl pulsemixer udiskie keepassxc python-pip python-pywal qalculate-gtk android-tools xarchiver
     xdg-user-dirs qutebrowser ranger syncthing sxiv telegram-desktop tree ttf-jetbrains-mono-nerd ttf-font-awesome qbittorrent
-    gpick ueberzugpp redshift p7zip unrar unzip epub-thumbnailer-git python-pdftotext poppler xorg-xinput vim webkit2gtk xclip yt-dlp
+    gpick ueberzugpp redshift p7zip unrar unzip epub-thumbnailer-git python-pdftotext poppler xorg-xinput vim webkit2gtk-4.1 xclip yt-dlp
     zathura zathura-pdf-mupdf zip xorg-server xorg-xinit libx11 libxinerama libxft base base-devel qt5ct qt6ct libreoffice-fresh
     pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber xorg-xwininfo scrcpy bibata-cursor-theme-bin
 )
@@ -174,8 +174,6 @@ EndSection
 EOF
 
 sleep 1 && clear
-
-#!/bin/bash
 
 has_bluetooth_adapter() {
     if command -v btmgmt &>/dev/null; then
