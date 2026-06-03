@@ -46,12 +46,55 @@ if ! grep -q "^ILoveCandy" /etc/pacman.conf; then
     sudo sed -i '/^\[options\]/a ILoveCandy' /etc/pacman.conf
 fi
 
+sleep 5 && clear
+
+openrgb_reboot_required=false
+
+setup_openrgb_ram_amd() {
+
+    if ! grep -qi "AuthenticAMD" /proc/cpuinfo; then
+        return
+    fi
+
+    if grep -q "^i2c-dev$" /etc/modules-load.d/i2c-dev.conf 2>/dev/null &&
+       grep -q "acpi_enforce_resources=lax" /etc/default/grub 2>/dev/null; then
+        return
+    fi
+
+    read -rp "Enable OpenRGB RAM support? [y/N] " answer
+    sleep 1 && clear
+
+    case "$answer" in
+        [Yy]*)
+
+            echo "Configuring OpenRGB RAM support..."
+
+            echo "i2c-dev" | sudo tee /etc/modules-load.d/i2c-dev.conf >/dev/null
+
+            if ! grep -q "acpi_enforce_resources=lax" /etc/default/grub; then
+                sudo sed -i \
+                    's/^GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="acpi_enforce_resources=lax /' \
+                    /etc/default/grub
+
+                sudo grub-mkconfig -o /boot/grub/grub.cfg >/dev/null
+            fi
+
+            sudo modprobe i2c_dev 2>/dev/null
+            sudo modprobe i2c_piix4 2>/dev/null
+
+            openrgb_reboot_required=true
+            ;;
+    esac
+}
+
 sudo pacman -Sy &> /dev/null
+
+setup_openrgb_ram_amd
 
 programs=(
     cava devour exa tty-clock-git picom-simpleanims-next-git cmatrix-git pipes.sh npm xdotool xautolock betterlockscreen 
     yad libnotify wal-telegram-git python-pywalfox xsettingsd themix-gui-git pacman-contrib ripgrep fd luarocks v4l2loopback-dkms
-    themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh
+    themix-theme-oomox-git archdroid-icon-theme tesseract-data-eng tesseract-data-por slop arandr polkit-gnome clipmenu zsh openrgb
     cmus mpd mpc ncmpcpp playerctl dbus simple-mtpfs dunst emacs feh ffmpeg ffmpegthumbnailer firefox flameshot pcmanfm gvfs
     fzf git gnu-free-fonts go gd btop mullvad-vpn-bin imagemagick mpv neofetch neovim noto-fonts noto-fonts-cjk noto-fonts-emoji
     numlockx obs-studio openssh perl pulsemixer udiskie keepassxc python-pip python-pywal qalculate-gtk android-tools xarchiver
@@ -514,6 +557,12 @@ if [ "$SHELL" != "/usr/bin/zsh" ]; then
   chsh -s /usr/bin/zsh
 fi
 sleep 1 && clear
+
+if [ "$openrgb_reboot_required" = true ]; then
+    echo ""
+    echo "OpenRGB RAM support was enabled."
+    echo "Please reboot before using OpenRGB."
+fi
 
 echo "All done!"
 echo "Please log out and log back in for the changes to take effect."
