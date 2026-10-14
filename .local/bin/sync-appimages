@@ -1,0 +1,9 @@
+
+#!/bin/bash
+
+for file in "$HOME"/Applications/*.AppImage; do
+    [ -f "$file" ] || continue
+    name=$(basename "$file" .AppImage | cut -d '-' -f 1 | tr '[:upper:]' '[:lower:]')
+    ln -sfn "$file" "$HOME/.local/bin/$name"
+done
+
